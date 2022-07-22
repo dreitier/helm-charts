@@ -1,12 +1,17 @@
 apiVersion: v1
+
+name: postfix
+description: Highly available postfix relay in Kubernetes
+type: application
+
 version: 1.0.1
 appVersion: 0.3.1
-description: A Helm chart for a highly available postfix relay in Kubernetes
-name: postfix
-keywords:
-- postfix
-sources:
-- https://github.com/dreitier/postfix-helm
+
+home: https://github.com/dreitier/postfix-docker
 maintainers:
 - name: dreitier GmbH
   email: hello@dreitier.com
+- name: Thomas Höll
+  email: tho@dreitier.com
+keywords:
+- postfix

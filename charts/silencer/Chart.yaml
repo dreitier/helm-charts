@@ -1,13 +1,18 @@
 apiVersion: v2
-name: silencer
-description: A Helm chart for Kubernetes to deploy silencer. Silencer is an application which provides an API to create silences in Alertmanager
 
+name: silencer
+description: Silencer is an application which provides an API to create silences in Alertmanager
 type: application
 
 version: 1.0.3
 appVersion: "1.1.0"
 
-home: https://github.com/dreitier/silencer-helm
+home: https://github.com/dreitier/silencer
 maintainers:
-  - name: Thomas Höll
-    email: tho@dreitier.com
+- name: dreitier GmbH
+  email: hello@dreitier.com
+- name: Thomas Höll
+  email: tho@dreitier.com
+keywords:
+- prometheus
+- alertmanager
