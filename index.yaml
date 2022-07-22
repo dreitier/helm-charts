@@ -16,4 +16,21 @@ entries:
     urls:
     - https://github.com/dreitier/helm-charts/releases/download/cloudmon-2.1.4/cloudmon-2.1.4.tgz
     version: 2.1.4
-generated: "2022-07-22T13:22:39.038654233Z"
+  postfix:
+  - apiVersion: v1
+    appVersion: 0.3.1
+    created: "2022-07-22T13:24:38.927725944Z"
+    description: A Helm chart for a highly available postfix relay in Kubernetes
+    digest: 53f9a0648c7f87efb1fb64ac8a5c06a01f61ed34a7d8844fc5924af3d4416735
+    keywords:
+    - postfix
+    maintainers:
+    - email: hello@dreitier.com
+      name: dreitier GmbH
+    name: postfix
+    sources:
+    - https://github.com/dreitier/postfix-helm
+    urls:
+    - https://github.com/dreitier/helm-charts/releases/download/postfix-1.0.1/postfix-1.0.1.tgz
+    version: 1.0.1
+generated: "2022-07-22T13:24:38.927735744Z"
