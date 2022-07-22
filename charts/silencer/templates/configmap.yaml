@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "silencer.fullname" . }}
+  labels:
+{{ include "silencer.labels" . | indent 4 }}
+data:
+  config.yaml: |
+    ---
+    alertmanager_host: {{ .Values.silencer.alertmanager.host }}
+    alertmanager_scheme: {{ .Values.silencer.alertmanager.scheme }}
+    alertmanager_port: {{ .Values.silencer.alertmanager.port }}
+    port: {{ .Values.silencer.port }}
+    log_level: {{ .Values.silencer.logLevel }}
