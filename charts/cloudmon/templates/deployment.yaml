@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cloudmon.fullname" . }}
+  labels:
+    {{- include "cloudmon.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "cloudmon.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- $cloudmon_config_hash := include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- $cloudmon_secret_hash := include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- $config_hash := printf "%s%s" $cloudmon_config_hash $cloudmon_secret_hash | sha256sum}}
+        checksum/config: {{ $config_hash }}
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "cloudmon.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: cloudmon-config
+          configMap:
+            name: {{ include "cloudmon.fullname" . }}
+      serviceAccountName: {{ include "cloudmon.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - mountPath: /etc/cloudmon/config-raw.yaml
+              name: cloudmon-config
+              subPath: config-raw.yaml
+          {{- $length := len .Values.cloudmon.secrets }}{{- if ne $length 0 }}
+          envFrom:
+            - secretRef:
+                name: {{ include "cloudmon.fullname" . }}
+                  {{- end }}
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /api
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /api
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

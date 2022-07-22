@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cloudmon.fullname" . }}
+  labels:
+{{ include "cloudmon.labels" . | indent 4 }}
+data:
+  config-raw.yaml: |
+    port: 8000
+    log_level: {{ .Values.cloudmon.log_level }}
+    update_interval: {{ .Values.cloudmon.update_interval }}
+    downloads:
+      enabled: {{ .Values.cloudmon.downloads.enabled }}
+
+    {{- with .Values.cloudmon.ignore_disks }}
+    ignore_disks:
+        {{- toYaml . | nindent 6 }}
+    {{- end }}
+
+    {{- with .Values.cloudmon.environments }}
+    environments:
+        {{- toYaml . | nindent 6 }}
+    {{- end }}
