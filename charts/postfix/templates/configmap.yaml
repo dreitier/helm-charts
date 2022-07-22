@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "postfix.fullname" . }}
+  labels:
+    app: {{ template "postfix.name" . }}
+    chart: {{ template "postfix.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  tx-smtp-relay-host: {{ .Values.smtp.relayHost | squote }}
+  tx-smtp-relay-myhostname: {{ .Values.smtp.relayMyhostname | squote }}
+  tx-smtp-relay-username: {{ .Values.smtp.relayUsername | squote }}
+  tx-smtp-relay-networks: {{ .Values.smtp.relayNetworks | squote }}
+  tx-smtp-sasl-security-options: {{ .Values.smtp.saslSecurityOptions | squote }}
+  tx-smtp-sasl-tls-security-options: {{ .Values.smtp.saslTlsSecurityOptions | squote }}
+  tx-smtp-sasl-security-level: {{ .Values.smtp.saslSecurityLevel | squote }}
+
+
+
