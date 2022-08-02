@@ -12,10 +12,21 @@ data:
     downloads:
       enabled: {{ .Values.cloudmon.downloads.enabled }}
 
-    {{- with .Values.cloudmon.ignore_disks }}
-    ignore_disks:
-        {{- toYaml . | nindent 6 }}
-    {{- end }}
+    # http:
+    #  basic_auth:
+    #    username: username
+    #    password: password
+
+    disks:
+      include:
+      {{- with .Values.cloudmon.disks.include }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      exclude:
+      {{- with .Values.cloudmon.disks.exclude }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      all_others: {{ .Values.cloudmon.disks.all_others}}
 
     {{- with .Values.cloudmon.environments }}
     environments:

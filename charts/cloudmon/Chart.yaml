@@ -4,8 +4,8 @@ name: cloudmon
 description: Monitoring of backup files in filesystems and object storages
 type: application
 
-version: 2.1.4
-appVersion: "1.3.1"
+version: 3.0.0
+appVersion: "1.5.0"
 
 home: https://github.com/dreitier/cloudmon
 maintainers:
@@ -18,3 +18,6 @@ keywords:
 - minio
 - monitoring
 - backup
+- prometheus
+- grafana
+- objectstorage

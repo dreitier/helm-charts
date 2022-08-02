@@ -80,13 +80,15 @@ tolerations: []
 
 affinity: {}
 
-
 cloudmon:
   log_level: info
   update_interval: 60
   downloads:
     enabled: true
-  ignore_disks: []
+  disks:
+    include: []
+    exclude: []
+    all_others: include
   environments: {}
 #    example-env:
 #      access_key_id: ${AWS_API_KEY}
