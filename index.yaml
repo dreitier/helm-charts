@@ -2,6 +2,30 @@ apiVersion: v1
 entries:
   cloudmon:
   - apiVersion: v2
+    appVersion: 1.5.0
+    created: "2022-08-02T19:22:24.763491981Z"
+    description: Monitoring of backup files in filesystems and object storages
+    digest: 7bbe44214953697b02c5f5d7d72a568e9f3d32da95da1f800db3481835c267bb
+    home: https://github.com/dreitier/cloudmon
+    keywords:
+    - s3
+    - minio
+    - monitoring
+    - backup
+    - prometheus
+    - grafana
+    - objectstorage
+    maintainers:
+    - email: hello@dreitier.com
+      name: dreitier GmbH
+    - email: tho@dreitier.com
+      name: Thomas Höll
+    name: cloudmon
+    type: application
+    urls:
+    - https://github.com/dreitier/helm-charts/releases/download/cloudmon-3.0.0/cloudmon-3.0.0.tgz
+    version: 3.0.0
+  - apiVersion: v2
     appVersion: 1.3.1
     created: "2022-07-22T13:22:39.038646233Z"
     description: A Helm chart for Cloudmon, a backup monitoring tool
@@ -49,4 +73,4 @@ entries:
     urls:
     - https://github.com/dreitier/helm-charts/releases/download/silencer-1.0.3/silencer-1.0.3.tgz
     version: 1.0.3
-generated: "2022-07-22T13:25:19.294074827Z"
+generated: "2022-08-02T19:22:25.230719148Z"
