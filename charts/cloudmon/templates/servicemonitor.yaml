@@ -1,0 +1,13 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "cloudmon.fullname" . }}
+  labels:
+    {{- include "cloudmon.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "cloudmon.selectorLabels" . | nindent 6 }}
+  endpoints:
+  - port: http
+    path: /metrics
