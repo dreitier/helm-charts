@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "backmon.fullname" . }}
+  labels:
+{{ include "backmon.labels" . | indent 4 }}
+data:
+  config-raw.yaml: |
+    port: 8000
+    log_level: {{ .Values.backmon.log_level }}
+    update_interval: {{ .Values.backmon.update_interval }}
+    downloads:
+      enabled: {{ .Values.backmon.downloads.enabled }}
+
+    # http:
+    #  basic_auth:
+    #    username: username
+    #    password: password
+
+    disks:
+      include:
+      {{- with .Values.backmon.disks.include }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      exclude:
+      {{- with .Values.backmon.disks.exclude }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      all_others: {{ .Values.backmon.disks.all_others}}
+
+    {{- with .Values.backmon.environments }}
+    environments:
+        {{- toYaml . | nindent 6 }}
+    {{- end }}
