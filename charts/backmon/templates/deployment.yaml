@@ -32,6 +32,9 @@ spec:
         - name: backmon-config
           configMap:
             name: {{ include "backmon.fullname" . }}
+      {{- with .Values.extraVolumes }}
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
       serviceAccountName: {{ include "backmon.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -45,8 +48,15 @@ spec:
             - mountPath: /etc/backmon/config-raw.yaml
               name: backmon-config
               subPath: config-raw.yaml
+          {{- with .Values.extraVolumeMounts }}
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- $length := len .Values.backmon.secrets }}
           {{- if or (ne $length 0) (.Values.externalSecret.enabled) }}
+          {{- with .Values.extraEnv }}
+          env:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
           envFrom:
           {{- if ne $length 0 }}
             - secretRef:

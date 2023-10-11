@@ -28,20 +28,24 @@ The following tables lists the configurable parameters of the backmon chart and 
 | `ingress.tls.enabled`      | Enable TLS on the Ingress. The name of the TLS secret is `{{ $fullName }}-tls`                                                                          | `false`                                                  |
 | `probes.enabled`           | Enable the readiness and liveness probes                                                                                                                | `false`                                                  |
 | `backmon.log_level`        | Log level of the application. See https://github.com/sirupsen/logrus#level-logging for more information                                                 | `info`                                                   |
-| `backmon.update_interval`  | How often Cloudmon should scan the configured buckets (interval in minutes)                                                                             | `60`                                                     |
+| `backmon.update_interval`  | How often backmon should scan the configured buckets (interval in minutes)                                                                              | `60`                                                     |
 | `backmon.disks.include`    | Explicitly include those disks during discovery ([official docs](https://dreitier.github.io/backmon-docs/reference/backmon-configuration/overview))     | `[]`                                                     |
 | `backmon.disks.exclude`    | Explicitly exclude those disks during discovery ([official docs](https://dreitier.github.io/backmon-docs/reference/backmon-configuration/overview))     | `[]`                                                     |
 | `backmon.disks.all_others` | For each other disk found during discovery, do that ([official docs](https://dreitier.github.io/backmon-docs/reference/backmon-configuration/overview)) | `include`                                                |
 | `backmon.environments`     | Map of environments backmon should scan. See `values.yaml` for an example                                                                               | `{}`                                                     |
-| `backmon.secrets`          | List of secrets to be used in Cloudmon environment configuration. See `values.yaml` for an example                                                      | `[]`                                                     |
-| `externalSecret.enabled`   | If enabled, environment variables from an external secret are injected into the container . See `values.yaml` for an example                            | `false`                        |
-| `externalSecret.name`      | Name of the external secret to use. For this to work, `externalSecret.enabled` must be set to `true`                                                    | `custom-secret`                        |
+| `backmon.secrets`          | List of secrets to be used in backmon environment configuration. See `values.yaml` for an example                                                       | `[]`                                                     |
+| `externalSecret.enabled`   | If enabled, environment variables from an external secret are injected into the container . See `values.yaml` for an example                            | `false`                                                  |
+| `externalSecret.name`      | Name of the external secret to use. For this to work, `externalSecret.enabled` must be set to `true`                                                    | `custom-secret`                                          |
+| `extraEnv`                 | List of environment variables to be injected into to backmon container. See `values.yaml` for an example                                                | `[]`                                                     |
+| `extraVolumes`             | List of volumes to be injected into to backmon container. See `values.yaml` for an example                                                              | `[]`                                                     |
+| `extraVolumeMounts`        | List of volume mounts variables to be injected into to backmon container. See `values.yaml` for an example                                              | `[]`                                                     |
 
 ### Prerequisites
 
 - Kubernetes 1.10+
 
 ## Development
+
 ### Test local chart output
 
 ```bash

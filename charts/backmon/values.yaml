@@ -103,3 +103,18 @@ backmon:
 externalSecret:
   enabled: false
   name: custom-secret
+
+extraVolumes: []
+#  - name: ca-bundle
+#    configMap:
+#      name: ca-bundle
+
+extraVolumeMounts: []
+#  - name: ca-bundle
+#    mountPath: /etc/ssl/certs/custom-trust-bundle.crt
+#    subPath: ca-bundle.crt
+#    readOnly: true
+
+extraEnv: []
+#  - name: AWS_CA_BUNDLE
+#    value: /etc/ssl/certs/custom-trust-bundle.crt
