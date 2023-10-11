@@ -100,3 +100,6 @@ backmon:
 #      value: XYZ
 #    - key: AWS_API_SECRET
 #      value: XYZ
+externalSecret:
+  enabled: false
+  name: custom-secret

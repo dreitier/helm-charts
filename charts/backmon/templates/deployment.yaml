@@ -45,11 +45,18 @@ spec:
             - mountPath: /etc/backmon/config-raw.yaml
               name: backmon-config
               subPath: config-raw.yaml
-          {{- $length := len .Values.backmon.secrets }}{{- if ne $length 0 }}
+          {{- $length := len .Values.backmon.secrets }}
+          {{- if or (ne $length 0) (.Values.externalSecret.enabled) }}
           envFrom:
+          {{- if ne $length 0 }}
             - secretRef:
                 name: {{ include "backmon.fullname" . }}
-                  {{- end }}
+          {{- end }}
+          {{- if .Values.externalSecret.enabled }}
+            - secretRef:
+                name: {{ .Values.externalSecret.name }}
+          {{- end }}
+          {{- end }}
           ports:
             - name: http
               containerPort: 8000
