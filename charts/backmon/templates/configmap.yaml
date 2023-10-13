@@ -1,3 +1,4 @@
+{{- if .Values.createConfigFile }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -32,3 +33,4 @@ data:
     environments:
         {{- toYaml . | nindent 6 }}
     {{- end }}
+{{- end }}

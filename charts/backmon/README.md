@@ -39,6 +39,7 @@ The following tables lists the configurable parameters of the backmon chart and 
 | `extraEnv`                 | List of environment variables to be injected into to backmon container. See `values.yaml` for an example                                                | `[]`                                                     |
 | `extraVolumes`             | List of volumes to be injected into to backmon container. See `values.yaml` for an example                                                              | `[]`                                                     |
 | `extraVolumeMounts`        | List of volume mounts variables to be injected into to backmon container. See `values.yaml` for an example                                              | `[]`                                                     |
+| `createConfigFile`         | Whether to create the config file. Set to ```false``` to supply your own, for example via a secret.                                                     | `true`                                                   |
 
 ### Prerequisites
 

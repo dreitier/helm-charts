@@ -80,6 +80,8 @@ tolerations: []
 
 affinity: {}
 
+createConfigFile: true
+
 backmon:
   log_level: info
   update_interval: 60
