@@ -87,5 +87,5 @@ silencer:
   logLevel: info
   alertmanager:
     host: prometheus-alertmanager.telemetry.svc
-    port: 80
+    port: 9093
     scheme: http
