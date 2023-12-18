@@ -253,6 +253,26 @@ entries:
   silencer:
   - apiVersion: v2
     appVersion: 1.1.0
+    created: "2023-12-18T09:05:25.542147402Z"
+    description: Silencer is an application which provides an API to create silences
+      in Alertmanager
+    digest: f3b6f78fb47c1d4a13e92ac4e429913e2e1f689ecddceb15f453db43e241b0a7
+    home: https://github.com/dreitier/silencer
+    keywords:
+    - prometheus
+    - alertmanager
+    maintainers:
+    - email: hello@dreitier.com
+      name: dreitier GmbH
+    - email: tho@dreitier.com
+      name: Thomas Höll
+    name: silencer
+    type: application
+    urls:
+    - https://github.com/dreitier/helm-charts/releases/download/silencer-1.1.0/silencer-1.1.0.tgz
+    version: 1.1.0
+  - apiVersion: v2
+    appVersion: 1.1.0
     created: "2022-07-22T13:25:19.293971327Z"
     description: A Helm chart for Kubernetes to deploy silencer. Silencer is an application
       which provides an API to create silences in Alertmanager
@@ -266,4 +286,4 @@ entries:
     urls:
     - https://github.com/dreitier/helm-charts/releases/download/silencer-1.0.3/silencer-1.0.3.tgz
     version: 1.0.3
-generated: "2023-11-27T09:49:03.017590753Z"
+generated: "2023-12-18T09:05:25.542174372Z"
