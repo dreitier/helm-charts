@@ -18,17 +18,6 @@ data:
     #    username: username
     #    password: password
 
-    disks:
-      include:
-      {{- with .Values.backmon.disks.include }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      exclude:
-      {{- with .Values.backmon.disks.exclude }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      all_others: {{ .Values.backmon.disks.all_others}}
-
     {{- with .Values.backmon.environments }}
     environments:
         {{- toYaml . | nindent 6 }}
