@@ -1,0 +1,43 @@
+{{- if .Values.fileserver.ingress.enabled -}}
+{{- $secretName := printf "%s-tls" ( include "psono.fileserver.fullname" . ) }}
+{{- $serviceName := include "psono.fileserver.fullname" . }}
+{{- $servicePort := .Values.server.service.port -}}
+apiVersion: {{ template "ingress.apiVersion" . }}
+kind: Ingress
+metadata:
+  name: {{ template "psono.fileserver.fullname" . }}
+  labels:
+  {{- include "psono.fileserver.labels" . | nindent 4 }}
+  {{- with .Values.fileserver.ingress.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if or (.Capabilities.APIVersions.Has "networking.k8s.io/v1/IngressClass") (.Capabilities.APIVersions.Has "networking.k8s.io/v1beta1/IngressClass") }}
+  {{- if .Values.server.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.server.ingress.ingressClassName }}
+  {{- end }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.fileserver.host }}
+      http:
+        paths:
+          - path: {{ .Values.fileserver.path }}
+            pathType: Prefix
+            backend:
+            {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/IngressClass" }}
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: {{ $servicePort }}
+            {{- else if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1/IngressClass" }}
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+            {{- end }}
+  {{- if .Values.fileserver.ingress.tls }}
+  tls:
+    - hosts:
+        - {{ .Values.fileserver.host }}
+      secretName: {{ $secretName }}
+  {{- end -}}
+{{- end -}}

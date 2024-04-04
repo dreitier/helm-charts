@@ -1,0 +1,30 @@
+workdir: {{ .Values.server.cronjob.backup.workdir }}
+models:
+  psono:
+    archive:
+      includes:
+        - /config
+    databases:
+      psono:
+        type: postgresql
+        host: {{ include "psono.db.host" . }}
+        port: {{ include "psono.db.port" . }}
+        database: {{ .Values.server.db.name | default "psono" }}
+        username: ${DB_USER}
+        password: ${DB_PASS}
+        args: {{ .Values.server.cronjob.backup.dumpArgs }}
+    compress_with:
+      type: tgz
+    {{- if .Values.server.cronjob.backup.encryption }}
+    encrypt_with:
+      type: openssl
+      password: ${PASSPHRASE}
+      salt: false
+    {{- end }}
+    store_with:
+      type: s3
+      bucket: {{ .Values.server.cronjob.backup.bucket.name }}
+      region: {{ .Values.server.cronjob.backup.bucket.region }}
+      path: {{ .Values.server.cronjob.backup.bucket.path }}
+      access_key_id: {{ .Values.server.cronjob.backup.bucket.accessKey }}
+      secret_access_key: ${SECRET_ACCESS_KEY}

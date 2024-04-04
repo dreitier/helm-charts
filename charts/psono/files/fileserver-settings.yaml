@@ -1,0 +1,24 @@
+SECRET_KEY: {{ .Values.fileserver.secretKey | squote }}
+PRIVATE_KEY: {{ .Values.fileserver.privateKey | squote }}
+PUBLIC_KEY: {{ .Values.fileserver.publicKey | squote }}
+SERVER_URL: {{ include "psono.server.externalUrl" . | trimSuffix "/" | squote }}
+SERVER_PUBLIC_KEY: {{ .Values.fileserver.serverPublicKey | squote }}
+CLUSTER_ID: {{ .Values.fileserver.clusterId | squote }}
+CLUSTER_PRIVATE_KEY: {{ .Values.fileserver.clusterPrivateKey | squote }}
+SHARDS: {{ .Values.fileserver.shards | toJson }}
+
+# Disable SSL verification for the SERVER_URL (don't use this in production)
+SERVER_URL_VERIFY_SSL: {{ .Values.fileserver.sslVerify | ternary "True" "False" }}
+
+# Switch DEBUG to false if you go into production
+DEBUG: {{ .Values.fileserver.debug | ternary "True" "False" }}
+
+# Adjust this according to Django Documentation https://docs.djangoproject.com/en/2.2/ref/settings/
+  {{- with .Values.fileserver.allowedHosts }}
+ALLOWED_HOSTS:
+  {{- toYaml . | nindent 6 }}
+  {{- end }}
+
+
+# Should be the full path to your fileserver
+HOST_URL: '{{ include "psono.fileserver.externalUrl" . | trimSuffix "/" }}'

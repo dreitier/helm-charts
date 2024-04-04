@@ -1,0 +1,84 @@
+{{- if .Values.fileserver.enabled }}
+{{ $shard := index .Values.fileserver.shards 0 }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "psono.fileserver.fullname" . }}
+  labels:
+    {{- include "psono.fileserver.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "psono.fileserver.matchLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "psono.fileserver.labels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Chart.Name "/templates/fileserver/secret.yaml") . | sha256sum }}
+    spec:
+      serviceAccountName: {{ template "psono.serviceAccountName.fileserver"  }}
+      volumes:
+        - name: config
+          secret:
+            secretName: {{ include "psono.fileserver.fullname" . }}
+        {{- if eq $shard.engine.class "local" }}
+        - name: data
+          {{- if .Values.fileserver.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "psono.fileserver.fullname" . }}
+          {{- else }}
+          emptyDir:
+            { }
+          {{- end }}
+        {{- end }}
+      initContainers:
+        - name: {{ .Chart.Name }}-fileserver-testconfig
+          image: "{{ .Values.fileserver.image.repository }}:{{ .Values.fileserver.image.tag }}"
+          imagePullPolicy: {{ .Values.fileserver.image.pullPolicy }}
+          volumeMounts:
+            - name: config
+              mountPath: /root/.psono_fileserver/settings.yaml
+              subPath: settings.yaml
+              {{- if eq $shard.engine.class "local" }}
+            - name: data
+              mountPath: {{ $shard.engine.kwargs.location }}
+              {{- end }}
+          command:
+            - python3
+            - ./psono/manage.py
+            - testconfig
+          resources:
+          {{- toYaml .Values.fileserver.resources | nindent 12 }}
+      containers:
+        - name: {{ .Chart.Name }}-fileserver
+          image: "{{ .Values.fileserver.image.repository }}:{{ .Values.fileserver.image.tag }}"
+          imagePullPolicy: {{ .Values.fileserver.image.pullPolicy }}
+          volumeMounts:
+            - name: config
+              mountPath: /root/.psono_fileserver/settings.yaml
+              subPath: settings.yaml
+            {{- if eq $shard.engine.class "local" }}
+            - name: data
+              mountPath: {{ $shard.engine.kwargs.location }}
+            {{- end }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.fileserver.resources | nindent 12 }}
+      {{- with .Values.fileserver.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.fileserver.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.fileserver.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+{{- end }}

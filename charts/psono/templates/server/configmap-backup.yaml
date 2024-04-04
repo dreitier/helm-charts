@@ -1,0 +1,12 @@
+{{- if .Values.server.cronjob.backup.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "psono.server.fullname" . }}-backup-config
+  labels:
+    {{- include "psono.server.labels" . | nindent 4 }}
+
+data:
+  gobackup.yaml: |
+{{- tpl ( .Files.Get "files/gobackup-settings.yaml" ) . | nindent 4 }}
+{{- end }}

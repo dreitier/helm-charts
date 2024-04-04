@@ -1,0 +1,255 @@
+# Default values for psono.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+imagePullSecrets: []
+
+serviceAccounts:
+  server:
+    create: true
+    name:
+    annotations: {}
+  fileserver:
+    create: true
+    name:
+    annotations: {}
+
+server:
+  name: server
+  displayName: "Psono Server"
+  replicaCount: 1
+
+  image:
+    repository: psono/psono-combo-enterprise
+    tag: 4.0.9-3.0.7-1.7.1
+    pullPolicy: IfNotPresent
+
+  nameOverride: ""
+  fullnameOverride: ""
+
+  probes:
+    enabled: false
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  host: server.chart-example.local
+  path: "/server"
+
+  forceTls: false
+
+  ingress:
+    enabled: false
+    annotations: {}
+#      kubernetes.io/ingress.class: nginx
+#      kubernetes.io/tls-acme: "true"
+#      cert-manager.io/cluster-issuer: letsencrypt-prod
+#      nginx.ingress.kubernetes.io/proxy-body-size: "512m"
+    tls: false
+
+  # Switch DEBUG to false if you go into production
+  debug: false
+
+  # Adjust this according to Django Documentation https://docs.djangoproject.com/en/1.10/ref/settings/
+  allowedHosts: ['*']
+
+  # Should be your domain without "www.". Will be the last part of the username
+  allowedDomains: ['psono.pw']
+
+  # try python3 ./psono/manage.py generateserverkeys
+  # docker run --rm -it psono/psono-server-enterprise /usr/local/bin/python3 /root/psono/manage.py generateserverkeys
+  secretKey: 'TAFxLnQKwdD48AWNY8PlqXQpGMeuthaxPaEKGaod4PH1WjWFPV7bALV33rHl9Py0'
+  activationLinkSecret: 'fxTlKfuJUWviUkEUoHcVinrSvyUVb0HPOY5PqKNHAVOZvk8XgRgvI2oIOATMqZjw'
+  dbSecret: 'Wd6gBOD1v6z9T8nY0vYIkbCX5OvLV2bBmvtas8vkQtL39Dv9lQzvmiY4o7p6kKgf'
+  emailSecretSalt: '$2b$12$XUG.sKxC2jmkUvWQjg53.e'
+  privateKey: '302650c3c82f7111c2e8ceb660d32173cdc8c3d7717f1d4f982aad5234648fcb'
+  publicKey: '02da2ad857321d701d754a7e60d0a147cdbc400ff4465e1f57bc2d9fbfeddf0b'
+  allowRegistration: false
+  allowLostPassword: false
+
+  ldap:
+    enabled: false
+    url: ldap://my-ad.domain.com:389
+    domain: ad.my-domain.com
+    bindDN: CN=LDAP-Binduser,OU=Users,DC=ad,DC=my-domain,DC=com
+    bindPass: 27wrT0S3
+    userBaseDN: OU=Users,DC=my,DC=domain,DC=com
+    groupBaseDN: OU=Users,DC=my,DC=domain,DC=com
+
+  saml:
+    enabled: false
+    idp:
+      entityId: "REPLACE_WITH_AZURE_AD_IDENTIFIER"
+      singleSignOnService:
+        url: "REPLACE_WITH_LOGIN_URL"
+      509cert: "CERT_FROM_AZURE_APPLICATION"
+      username_domain: "USER_DOMAIN"
+      required_group: []
+      max_session_lifetime: 43200
+    sp:
+      attributeConsumingService:
+        serviceName: "Psono"
+        serviceDescription: "Psono password manager"
+      privateKey: "SP_PRIVATE_CERTIFICATE"
+      x509cert: "SP_X509CERT"
+
+  oidc:
+    enabled: false
+    sign_algo: 'RS256'
+    client_id: 'psono'
+    client_secret: 'd61d048a-100e-4299-885f-b3e23539b60c'
+    jwks_endpoint: 'https://keycloak.example.com/realms/psono/protocol/openid-connect/certs'
+    authorization_endpoint: 'https://keycloak.example.com/realms/psono/protocol/openid-connect/auth'
+    token_endpoint: 'https://keycloak.example.com/realms/psono/protocol/openid-connect/token'
+    user_endpoint: 'https://keycloak.example.com/realms/psono/protocol/openid-connect/userinfo'
+    end_session_endpoint: 'http://127.0.0.1:8080/realms/psono/protocol/openid-connect/logout'
+
+  db:
+    bundled: true
+    name: psono
+    host: localhost
+    port: 5432
+    user: psono
+    password: psono
+    ssl: false
+    metrics:
+      enabled: false
+      image:
+        repository: wrouesnel/postgres_exporter
+        tag: v0.8.0
+        pullPolicy: IfNotPresent
+
+  mail:
+    from: 'the-mail-for-for-example-useraccount-activations@test.com'
+    host: 'localhost'
+    port: 25
+  #  user: user
+  #  password: pass
+
+  resources: { }
+
+  nodeSelector: { }
+
+  tolerations: [ ]
+
+  affinity: { }
+
+  ## Cronjob to execute psono cleanup task
+  ## ref: https://doc.psono.com/mydoc_install_server_ee.html
+  ##
+  cronjob:
+    cleanup:
+      enabled: true
+      schedule: "30 2 * * *"
+      annotations: {}
+      failedJobsHistoryLimit: 5
+      successfulJobsHistoryLimit: 2
+
+      resources: {}
+
+      nodeSelector: {}
+
+      tolerations: []
+
+      affinity: {}
+    backup:
+      enabled: false
+      workdir: /var/gobackup
+      dumpArgs: -O -x
+      encryption: false
+      passphrase:
+      bucket:
+        name:
+        region: eu-central-1
+        path: /psono/
+        accessKey:
+        secretKey:
+      image:
+        repository: dreitier/gobackup
+        tag: 20220717-dreitier
+        pullPolicy: IfNotPresent
+      schedule: "0 0 * * *"
+      annotations: {}
+      failedJobsHistoryLimit: 5
+      successfulJobsHistoryLimit: 2
+
+      resources: {}
+
+      nodeSelector: {}
+
+      tolerations: []
+
+      affinity: {}
+
+client:
+  name: client
+  logonDomain: my-user-realm.com
+  allowCustomServer: false
+  enableFiles: true
+
+  saml:
+    title: "Some text before the button. e.g. Company Login"
+    button: "SAML SSO Login"
+
+  oidc:
+    title: "Some text before the button. e.g. Company Login"
+    button: "OIDC SSO Login"
+
+admin:
+  enabled: true
+
+fileserver:
+  enabled: false
+  debug: false
+  sslVerify: true
+  allowedHosts: ['*']
+  name: fileserver
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  image:
+    repository: psono/psono-fileserver
+    tag: 3.0.1
+    pullPolicy: IfNotPresent
+
+  secretKey: 'ew)H7v/_cf>^u&}RPm\M^5Q8/C-~^QLupUknS=5Qkx8{-ez6+}'
+  privateKey: '92b8ecehmxuxkbv84zfehk1uaaksr0fpsro3g4xe6cbb7bu0fybjpfqe0279m6se'
+  publicKey: 'kgmgtsb8v4asl39pefez94qozqpw9gqe4zl4uqr48zcv2a8xjj8u0p6g3z0nxg3j'
+  serverPublicKey: 'jjn8go7qysaze4qugi1t8he4jdtxfvmwljdb5i5ril4uhteox3f6bie0lbusnurh'
+  clusterId: 'a8d561b6-c8bf-43f9-a9d0-ced8780a49b2'
+  clusterPrivateKey: '64wnudbnsvcmcka3xy1tz25kpb55crb5caybfr5taj90rqihtwclo2z9h9wm4egu'
+  shards: [{shard_id: fdae83f6-e03e-4718-a32f-e2c68d5d808f, read: True, write: True, delete: True, allow_link_shares: True, engine: {class: 'local', kwargs: {location: '/opt/psono-shard/fdae83f6-e03e-4718-a32f-e2c68d5d808f'}}}]
+
+  host: fileserver.chart-example.local
+  path: "/"
+  forceTls: false
+
+  ingress:
+    enabled: false
+    annotations: { }
+    #      kubernetes.io/ingress.class: nginx
+    #      kubernetes.io/tls-acme: "true"
+    #      cert-manager.io/cluster-issuer: letsencrypt-prod
+    tls: false
+
+  persistence:
+    enabled: false
+#    storageClassName: my-sc
+    size: 8Gi
+  resources: { }
+
+  nodeSelector: { }
+
+  tolerations: [ ]
+
+  affinity: { }
+
+postgresql:
+  persistence:
+    enabled: false
+  primary:
+    initdb:
+      scriptsSecret: psono-postgres-initdb-secret

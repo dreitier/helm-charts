@@ -1,0 +1,1 @@
+CREATE USER {{ .Values.server.db.user }} WITH ENCRYPTED PASSWORD '{{ .Values.server.db.password }}';

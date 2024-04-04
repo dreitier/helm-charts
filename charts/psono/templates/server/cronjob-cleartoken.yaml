@@ -1,0 +1,67 @@
+{{- if .Values.server.cronjob.cleanup.enabled }}
+{{- if .Capabilities.APIVersions.Has "batch/v1/CronJob" -}}
+apiVersion: batch/v1
+{{- else }}
+apiVersion: batch/v1beta1
+{{- end }}
+kind: CronJob
+metadata:
+  name: {{ template "psono.server.fullname" . }}-cleartoken
+  labels:
+    {{- include "psono.server.labels" . | nindent 4 }}
+  annotations:
+{{ toYaml .Values.server.cronjob.cleanup.annotations | indent 4 }}
+spec:
+  schedule: {{ .Values.server.cronjob.cleanup.schedule | quote }}
+  concurrencyPolicy: Forbid
+  {{- with .Values.server.cronjob.cleanup.failedJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ . }}
+  {{- end }}
+  {{- with .Values.server.cronjob.cleanup.successfulJobsHistoryLimit }}
+  successfulJobsHistoryLimit: {{ . }}
+  {{- end }}
+  jobTemplate:
+    metadata:
+      labels:
+        {{- include "psono.server.labels" . | nindent 8 }}
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: {{ include "psono.name" . }}
+            app.kubernetes.io/managed-by: {{ .Release.Service }}
+        spec:
+          serviceAccountName: {{ template "psono.serviceAccountName.server" . }}
+          volumes:
+            - name: config
+              secret:
+                secretName: {{ include "psono.server.fullname" . }}
+          restartPolicy: Never
+          containers:
+            - name: {{ .Chart.Name }}
+              image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
+              imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+              volumeMounts:
+                - name: config
+                  mountPath: /root/.psono_server/settings.yaml
+                  subPath: settings.yaml
+              command: [ "/usr/local/bin/python3" ]
+              args:
+                - "./psono/manage.py"
+                - "cleartoken"
+              resources:
+{{ toYaml .Values.server.cronjob.cleanup.resources | indent 16 }}
+    {{- with .Values.server.cronjob.cleanup.nodeSelector }}
+          nodeSelector:
+{{ toYaml . | indent 12 }}
+    {{- end }}
+    {{- with .Values.server.cronjob.cleanup.affinity }}
+          affinity:
+{{ toYaml . | indent 12 }}
+    {{- end }}
+    {{- with .Values.server.cronjob.cleanup.tolerations }}
+          tolerations:
+{{ toYaml . | indent 12 }}:
+    {{- end }}
+{{- end }}

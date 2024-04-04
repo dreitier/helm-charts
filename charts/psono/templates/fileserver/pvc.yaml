@@ -1,0 +1,22 @@
+{{ $shard := index .Values.fileserver.shards 0 }}
+{{- if and (.Values.fileserver.persistence.enabled) (eq $shard.engine.class "local") }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "psono.fileserver.fullname" . }}
+  labels:
+  {{- include "psono.fileserver.labels" . | nindent 4 }}
+  {{- with .Values.fileserver.persistence.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.fileserver.persistence.size }}
+  {{- if .Values.fileserver.persistence.storageClassName }}
+  storageClassName: {{ .Values.fileserver.persistence.storageClassName }}
+  {{- end }}
+{{- end }}

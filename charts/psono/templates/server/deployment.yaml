@@ -1,0 +1,142 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "psono.server.fullname" . }}
+  labels:
+    {{- include "psono.server.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.server.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "psono.server.matchLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "psono.server.labels" . | nindent 8 }}
+      annotations:
+        checksum/serverconfig: {{ include (print $.Template.BasePath "/server/secret.yaml") . | sha256sum }}
+        checksum/adminconfig: {{ include (print $.Template.BasePath "/client/configmap.yaml") . | sha256sum }}
+    spec:
+      serviceAccountName: {{ template "psono.serviceAccountName.server" . }}
+      volumes:
+        - name: server-config
+          secret:
+            secretName: {{ include "psono.server.fullname" . }}
+        - name: portal-config
+          configMap:
+            name: {{ include "psono.client.fullname" . }}
+        - name: client-config
+          configMap:
+            name: {{ include "psono.client.fullname" . }}
+        - name: logs
+          emptyDir: {}
+      initContainers:
+        - name: {{ .Chart.Name }}-check-db-ready
+          image: {{ include "postgres.image" . }}
+          command: ['sh', '-c',
+              'until pg_isready -h {{ include "psono.db.host" . }} -p {{ include "psono.db.port" . }} -U {{ .Values.server.db.user }};
+            do echo waiting for database; sleep 2; done;']
+          resources:
+            limits:
+              cpu: 100m
+              memory: 50Mi
+        - name: {{ .Chart.Name }}-db-migrate
+          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          volumeMounts:
+            - name: server-config
+              mountPath: /root/.psono_server/settings.yaml
+              subPath: settings.yaml
+            - name: logs
+              mountPath: /var/log/psono
+          command: ["/usr/local/bin/python3"]
+          args:
+            - "./psono/manage.py"
+            - "migrate"
+          resources:
+            {{- toYaml .Values.server.resources | nindent 12 }}
+      containers:
+        - name: {{ .Chart.Name }}-server
+          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          volumeMounts:
+            - name: server-config
+              mountPath: /root/.psono_server/settings.yaml
+              subPath: settings.yaml
+            - name: portal-config
+              mountPath: /usr/share/nginx/html/portal/config.json
+              subPath: config.json
+            - name: client-config
+              mountPath: /usr/share/nginx/html/config.json
+              subPath: config.json
+            - name: logs
+              mountPath: /var/log/psono
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          {{- if .Values.fileserver.enabled }}
+          env:
+            - name: NGINX_HEADER_CONTENT_SECURITY_POLICY
+              value: >-
+                "default-src \'none\'; manifest-src \'self\'; connect-src \'self\' {{ include "psono.fileserver.externalUrl" . }} https://static.psono.com https://keyserver.ubuntu.com https://storage.googleapis.com https://*.blob.core.windows.net https://*.s3.amazonaws.com https://*.digitaloceanspaces.com https://api.pwnedpasswords.com https://sentry.io; font-src \'self\'; img-src \'self\' www.google-analytics.com data:; script-src \'self\' www.google-analytics.com; style-src \'self\' \'unsafe-inline\'; object-src \'self\'; child-src \'self\'; form-action \'self\'"
+          {{- end }}
+          {{- if .Values.server.probes.enabled }}
+          startupProbe:
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            httpGet:
+              path: /healthcheck/
+              port: http
+          livenessProbe:
+            periodSeconds: 300
+            httpGet:
+              path: /healthcheck/
+              port: http
+          readinessProbe:
+            periodSeconds: 300
+            initialDelaySeconds: 10
+            httpGet:
+              path: /healthcheck/
+              port: http
+          {{- end }}
+          resources:
+            {{- toYaml .Values.server.resources | nindent 12 }}
+        {{ if .Values.server.db.metrics.enabled }}
+        - name:  {{ .Chart.Name }}-postgres-metrics
+          image: "{{ .Values.server.db.metrics.image.repository }}:{{ .Values.server.db.metrics.image.tag }}"
+          imagePullPolicy: {{ .Values.server.db.metrics.image.pullPolicy }}
+          env:
+            - name: DATA_SOURCE_URI
+              value: {{ include "psono.db.uri" . }}
+            - name: DATA_SOURCE_USER
+              valueFrom:
+                secretKeyRef:
+                  key: dbUser
+                  name: {{ include "psono.server.fullname" . }}
+            - name: DATA_SOURCE_PASS
+              valueFrom:
+                secretKeyRef:
+                  key: dbPass
+                  name: {{ include "psono.server.fullname" . }}
+          ports:
+            - containerPort: 9187
+              name: pg-metrics
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 100m
+              memory: 50Mi
+        {{- end }}
+      {{- with .Values.server.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.server.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.server.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
