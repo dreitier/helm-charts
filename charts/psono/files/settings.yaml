@@ -140,6 +140,9 @@ FILES_ENABLED: {{ .Values.client.enableFiles | default false | ternary "True" "F
 # Disables Link shares
 # COMPLIANCE_DISABLE_LINK_SHARES: True
 
+COMPLIANCE_ENFORCE_CENTRAL_SECURITY_REPORTS: {{ .Values.compliance.securityReport.enabled | default false | ternary "True" "False" }}
+COMPLIANCE_CENTRAL_SECURITY_REPORT_SECURITY_RECURRENCE_INTERVAL: {{ .Values.compliance.securityReport.interval }}
+
 # Only necessary if the psono-client runs on a sub path (no trailing slash) e.g. "https://wwww.psono.pw"
 # WEB_CLIENT_URL: ''
 

@@ -253,3 +253,8 @@ postgresql:
   primary:
     initdb:
       scriptsSecret: psono-postgres-initdb-secret
+
+compliance:
+  securityReport:
+    enabled: true
+    interval: 2592000 #seconds
