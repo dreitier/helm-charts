@@ -120,3 +120,6 @@ extraVolumeMounts: []
 extraEnv: []
 #  - name: AWS_CA_BUNDLE
 #    value: /etc/ssl/certs/custom-trust-bundle.crt
+
+serviceMonitor:
+  enabled: true
