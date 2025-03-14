@@ -67,44 +67,27 @@ resources: {}
   #   cpu: 100m
 #   memory: 128Mi
 
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
 nodeSelector: {}
 
 tolerations: []
 
 affinity: {}
 
-createConfigFile: true
-
 backmon:
-  log_level: info
-  update_interval: 60
-  downloads:
+  config:
     enabled: true
-  disks:
-    include: []
-    exclude: []
-    all_others: include
-  environments: {}
-#    example-env:
-#      access_key_id: ${AWS_API_KEY}
-#      secret_access_key: ${AWS_API_SECRET}
-#      region: eu-central-1
-#      definitions: backup_definitions.yaml
-  secrets: []
-#    - key: AWS_API_KEY
-#      value: XYZ
-#    - key: AWS_API_SECRET
-#      value: XYZ
-externalSecret:
-  enabled: false
-  name: custom-secret
+    content: |-
+      ---
+      port: 8000
+      log_level: info
+      update_interval: 15m
+      downloads:
+        enabled: true
+      environments: []
+      ...
+
+serviceMonitor:
+  enabled: true
 
 extraVolumes: []
 #  - name: ca-bundle
@@ -121,5 +104,5 @@ extraEnv: []
 #  - name: AWS_CA_BUNDLE
 #    value: /etc/ssl/certs/custom-trust-bundle.crt
 
-serviceMonitor:
-  enabled: true
+extraEnvFrom: []
+#  - name: custom-secret

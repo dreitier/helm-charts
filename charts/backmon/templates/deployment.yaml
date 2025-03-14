@@ -5,18 +5,15 @@ metadata:
   labels:
     {{- include "backmon.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "backmon.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
-        {{- $backmon_config_hash := include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- $backmon_secret_hash := include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
-        {{- $config_hash := printf "%s%s" $backmon_config_hash $backmon_secret_hash | sha256sum}}
+        {{- $config_hash := printf "%s" $backmon_secret_hash | sha256sum}}
         checksum/config: {{ $config_hash }}
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
@@ -28,10 +25,14 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if or (.Values.backmon.config.enabled) (gt (len .Values.extraVolumes) 0 ) }}
       volumes:
+      {{- end }}
+      {{- if .Values.backmon.config.enabled }}
         - name: backmon-config
-          configMap:
-            name: {{ include "backmon.fullname" . }}
+          secret:
+            secretName: {{ include "backmon.fullname" . }}
+      {{- end }}
       {{- with .Values.extraVolumes }}
       {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -44,28 +45,16 @@ spec:
           {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if or (.Values.backmon.config.enabled) (gt (len .Values.extraVolumeMounts) 0 ) }}
           volumeMounts:
-            - mountPath: /etc/backmon/config-raw.yaml
+          {{- end }}
+          {{- if .Values.backmon.config.enabled }}
+            - mountPath: /etc/backmon/config.yaml
               name: backmon-config
-              subPath: config-raw.yaml
+              subPath: config.yaml
+          {{- end }}
           {{- with .Values.extraVolumeMounts }}
           {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- $length := len .Values.backmon.secrets }}
-          {{- if or (ne $length 0) (.Values.externalSecret.enabled) }}
-          {{- with .Values.extraEnv }}
-          env:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
-          envFrom:
-          {{- if ne $length 0 }}
-            - secretRef:
-                name: {{ include "backmon.fullname" . }}
-          {{- end }}
-          {{- if .Values.externalSecret.enabled }}
-            - secretRef:
-                name: {{ .Values.externalSecret.name }}
-          {{- end }}
           {{- end }}
           ports:
             - name: http
@@ -81,6 +70,13 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- if gt (len .Values.extraEnvFrom) 0 }}
+          envFrom:
+          {{- range .Values.extraEnvFrom }}
+            - secretRef:
+                name: {{ .name }}
+          {{- end }}
+          {{- end  }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
