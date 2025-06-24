@@ -4,7 +4,7 @@ type: application
 description: A Helm chart for psono password manager
 icon: https://psono.com/web/image/res.company/1/logo
 name: psono
-version: 2.2.0
+version: 2.4.0
 dependencies:
   - name: "postgresql"
     version: "15.2.0"
