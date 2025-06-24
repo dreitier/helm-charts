@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: "latest"
+appVersion: "5.2.5-4.3.0-1.7.21"
 type: application
 description: A Helm chart for psono password manager
 icon: https://psono.com/web/image/res.company/1/logo
