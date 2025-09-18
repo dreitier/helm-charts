@@ -4,8 +4,8 @@ name: postfix
 description: Highly available postfix relay in Kubernetes
 type: application
 
-version: 1.1.0
-appVersion: 0.3.2
+version: 1.1.1
+appVersion: 0.3.3
 
 home: https://github.com/dreitier/postfix-docker
 maintainers:
