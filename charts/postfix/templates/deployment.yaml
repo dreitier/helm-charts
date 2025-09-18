@@ -58,7 +58,11 @@ spec:
             - name: TX_SMTP_RELAY_PASSWORD
               valueFrom:
                 secretKeyRef:
+                  {{ if .Values.secret.useExistingSecret -}}
+                  name: {{ .Values.secret.existingSecretName }}
+                  {{ else -}}
                   name: {{ template "postfix.fullname" . }}
+                  {{ end -}}
                   key: tx-smtp-relay-password
             - name: TX_SMTP_SASL_SECURITY_OPTIONS
               valueFrom:
