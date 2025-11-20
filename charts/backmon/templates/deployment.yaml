@@ -81,6 +81,7 @@ spec:
           env:
             {{- toYaml .Values.extraEnv | nindent 12 }}
           {{- end  }}
+      automountServiceAccountToken: {{ and .Values.serviceAccount.automountServiceAccountToken .Values.serviceAccount.create }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
