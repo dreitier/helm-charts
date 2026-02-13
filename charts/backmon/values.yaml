@@ -90,6 +90,9 @@ backmon:
 serviceMonitor:
   enabled: true
 
+prometheusRule:
+  enabled: false
+
 extraVolumes: []
 #  - name: ca-bundle
 #    configMap:
