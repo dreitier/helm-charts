@@ -98,6 +98,9 @@ prometheusRules:
   backupCountExceeding:
     enabled: true
     thresholdPercentage: 0.25
+  backupCountShort:
+    enabled: true
+    thresholdPercentage: 0.75
 
 extraVolumes: []
 #  - name: ca-bundle
