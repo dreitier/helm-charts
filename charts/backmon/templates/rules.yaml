@@ -17,4 +17,7 @@ spec:
 {{- if .Values.prometheusRules.backupCountShort.enabled -}}
 {{- include "backmon.rules.backupCountShort" .  | nindent 8 -}}
 {{- end -}}
+{{- if .Values.prometheusRules.backupMissing.enabled -}}
+{{- include "backmon.rules.backupMissing" .  | nindent 8 -}}
+{{- end -}}
 {{- end -}}

@@ -1,5 +1,5 @@
 {{/*
-PrometheusRule that checks if the amount of backups present exceeds the expected amount by a certain threshold
+PrometheusRule that checks if the amount of backups present is less than the expected amount by a certain threshold
 */}}
 {{- define "backmon.rules.backupCountShort" -}}
 - alert: BackupCountShort
