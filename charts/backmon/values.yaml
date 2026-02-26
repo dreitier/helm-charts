@@ -90,8 +90,14 @@ backmon:
 serviceMonitor:
   enabled: true
 
-prometheusRule:
+prometheusRules:
   enabled: false
+  backupOverdue:
+    enabled: true
+    gracePeriod: 24
+  backupCountExceeding:
+    enabled: true
+    thresholdPercentage: 0.25
 
 extraVolumes: []
 #  - name: ca-bundle

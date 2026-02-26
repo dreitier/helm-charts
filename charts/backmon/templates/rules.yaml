@@ -1,0 +1,17 @@
+{{- if .Values.prometheusRules.enabled -}}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ include "backmon.fullname" . }}-rules
+spec:
+  groups:
+    - name: backmon
+      rules:
+{{- if .Values.prometheusRules.backupOverdue.enabled -}}
+{{- include "backmon.rules.backupOverdue" .  | nindent 8 -}}
+{{- end -}}
+{{- if .Values.prometheusRules.backupCountExceeding.enabled -}}
+{{- include "backmon.rules.backupCountExceeding" .  | nindent 8 -}}
+{{- end -}}
+{{- end -}}
