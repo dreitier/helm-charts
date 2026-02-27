@@ -3,7 +3,7 @@ PrometheusRule that checks if the size of backups changes by more than a certain
 */}}
 {{- define "backmon.rules.backupDefinitionError" -}}
 - alert: BackmonStatusError
-  expr: backmon_definition_status != 0
+  expr: backmon_definition_status != 1
   for: 5m
   labels:
     severity: warning
