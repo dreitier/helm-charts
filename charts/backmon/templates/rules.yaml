@@ -23,4 +23,7 @@ spec:
 {{- if .Values.prometheusRules.backupSizeChanged.enabled -}}
 {{- include "backmon.rules.backupSizeChanged" .  | nindent 8 -}}
 {{- end -}}
+{{- if .Values.prometheusRules.backupDefinitionError.enabled -}}
+{{- include "backmon.rules.backupDefinitionError" .  | nindent 8 -}}
+{{- end -}}
 {{- end -}}
