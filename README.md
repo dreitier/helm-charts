@@ -20,6 +20,6 @@ helm install dreitier/backmon
 | Chart | Description |
 | --- | --- |
 | [backmon](charts/backmon) | [backmon - Monitoring of backup files in filesystems and object storages](https://github.com/dreitier/backmon) |
-| [silencer](charts/silencer) | [silencer - Create new silences in the Prometheus Alertmanager through a REST API.](https://github.com/dreitier/silencer) |
 | [postfix](charts/postfix) | Deploy postfix in Kubernetes for local mail relaying |
+| [psono](charts/psono) | [psono - Deploys the Psono password manager.](https://psono.com/) |
  
