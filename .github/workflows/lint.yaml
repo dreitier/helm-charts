@@ -1,16 +1,33 @@
 name: Lint and Test Charts
 
+# Feature branches and pull requests are only linted/tested.
+# Versions and releases are created exclusively on main (release.yaml).
 on:
+  push:
+    branches-ignore:
+      - main
+    paths:
+      - 'charts/**'
+      - '.github/**'
   pull_request:
     paths:
       - 'charts/**'
+      - '.github/**'
+
+# a new commit on the same branch/PR cancels the previous run
+concurrency:
+  group: lint-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   lint-chart:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v7
+        with:
+          # ct compares against the default branch, which needs the full history
+          fetch-depth: 0
 
       - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.7.0
@@ -18,11 +35,11 @@ jobs:
       - name: Run chart-testing (list-changed)
         id: list-changed
         run: |
-          changed=$(ct list-changed --target-branch ${{ github.event.repository.default_branch }})
+          changed=$(ct list-changed --config .github/ct.yaml --target-branch ${{ github.event.repository.default_branch }})
           if [[ -n "$changed" ]]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Run chart-testing (lint)
         if: steps.list-changed.outputs.changed == 'true'
-        run: ct lint --target-branch ${{ github.event.repository.default_branch }} --validate-maintainers=false --debug
+        run: ct lint --config .github/ct.yaml --target-branch ${{ github.event.repository.default_branch }} --validate-maintainers=false --debug
