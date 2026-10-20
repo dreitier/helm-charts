@@ -1,3 +1,13 @@
+## [backmon-v2.5.0](https://github.com/dreitier/helm-charts/compare/backmon-2.4.1...backmon-2.5.0) (2026-10-20)
+
+### Features
+
+* **ci:** add dependabot ([9efdeb2](https://github.com/dreitier/helm-charts/commit/9efdeb271a2e85ff642204be8125a0a062640434))
+
+### Bug Fixes
+
+* **postfix:** use chart apiVersion v2 ([#19](https://github.com/dreitier/helm-charts/issues/19)) ([2aac18a](https://github.com/dreitier/helm-charts/commit/2aac18a664ab69f5483a8f9d6a4a2596375d62f2))
+
 # Changelog
 All notable changes to this project will be documented in this file.
 
