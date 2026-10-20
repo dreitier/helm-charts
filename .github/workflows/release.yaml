@@ -101,11 +101,21 @@ jobs:
             echo "packaged=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Run chart-releaser
+      # The action is only used to install cr: with skip_packaging, v1.7.0 fails at the end
+      # ("latest_tag: unbound variable", fixed on main but not released yet)
+      - name: Install chart-releaser
         if: steps.package.outputs.packaged == 'true'
         uses: helm/chart-releaser-action@v1.7.0
         with:
-          skip_packaging: true
+          install_only: true
+
+      - name: Run chart-releaser
+        if: steps.package.outputs.packaged == 'true'
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          CR_SKIP_EXISTING: true
+        run: |
+          owner="${GITHUB_REPOSITORY%%/*}"
+          repo="${GITHUB_REPOSITORY#*/}"
+          cr upload --owner "$owner" --git-repo "$repo" --commit "$(git rev-parse HEAD)" --skip-existing
+          rm -rf .cr-index && mkdir -p .cr-index
+          cr index --owner "$owner" --git-repo "$repo" --push
