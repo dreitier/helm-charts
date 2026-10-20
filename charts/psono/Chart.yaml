@@ -10,7 +10,7 @@ annotations:
   dreitier.com/app-version-from: .server.image.tag
 dependencies:
   - name: "postgresql"
-    version: "15.2.0"
+    version: 18.12.4
     repository: "https://charts.bitnami.com/bitnami"
     condition: server.db.bundled
 maintainers:
