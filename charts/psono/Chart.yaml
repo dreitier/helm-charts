@@ -1,10 +1,10 @@
 apiVersion: v2
-appVersion: "5.2.5-4.3.0-1.7.21"
+appVersion: "5.3.10-4.3.4-1.7.24"
 type: application
 description: A Helm chart for psono password manager
 icon: https://psono.com/web/image/res.company/1/logo
 name: psono
-version: 2.5.1
+version: 2.6.0
 annotations:
   # appVersion is synced from this image tag on release
   dreitier.com/app-version-from: .server.image.tag
