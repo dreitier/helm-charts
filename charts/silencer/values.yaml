@@ -7,8 +7,8 @@ replicaCount: 1
 image:
   repository: dreitier/silencer
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  # Image version (kept up to date by Dependabot); Chart.yaml appVersion is synced from it on release
+  tag: "1.1.0"
 
 imagePullSecrets: []
 nameOverride: ""

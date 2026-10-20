@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: dreitier/cloudmon
-  tag: ""
+  tag: "1.5.1"
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
