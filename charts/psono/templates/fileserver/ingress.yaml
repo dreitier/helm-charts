@@ -1,7 +1,7 @@
 {{- if .Values.fileserver.ingress.enabled -}}
 {{- $secretName := printf "%s-tls" ( include "psono.fileserver.fullname" . ) }}
 {{- $serviceName := include "psono.fileserver.fullname" . }}
-{{- $servicePort := .Values.server.service.port -}}
+{{- $servicePort := .Values.fileserver.service.port -}}
 apiVersion: {{ template "ingress.apiVersion" . }}
 kind: Ingress
 metadata:
@@ -14,8 +14,8 @@ metadata:
   {{- end }}
 spec:
   {{- if or (.Capabilities.APIVersions.Has "networking.k8s.io/v1/IngressClass") (.Capabilities.APIVersions.Has "networking.k8s.io/v1beta1/IngressClass") }}
-  {{- if .Values.server.ingress.ingressClassName }}
-  ingressClassName: {{ .Values.server.ingress.ingressClassName }}
+  {{- if .Values.fileserver.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.fileserver.ingress.ingressClassName }}
   {{- end }}
   {{- end }}
   rules:

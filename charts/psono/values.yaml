@@ -41,6 +41,8 @@ server:
 
   ingress:
     enabled: false
+    # IngressClass to use; empty uses the cluster's default class
+    ingressClassName: ""
     annotations: {}
 #      kubernetes.io/ingress.class: nginx
 #      kubernetes.io/tls-acme: "true"
@@ -229,6 +231,8 @@ fileserver:
 
   ingress:
     enabled: false
+    # IngressClass to use; empty uses the cluster's default class
+    ingressClassName: ""
     annotations: { }
     #      kubernetes.io/ingress.class: nginx
     #      kubernetes.io/tls-acme: "true"
