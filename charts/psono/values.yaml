@@ -44,10 +44,10 @@ server:
     # IngressClass to use; empty uses the cluster's default class
     ingressClassName: ""
     annotations: {}
-#      kubernetes.io/ingress.class: nginx
-#      kubernetes.io/tls-acme: "true"
-#      cert-manager.io/cluster-issuer: letsencrypt-prod
-#      nginx.ingress.kubernetes.io/proxy-body-size: "512m"
+    #      kubernetes.io/ingress.class: nginx
+    #      kubernetes.io/tls-acme: "true"
+    #      cert-manager.io/cluster-issuer: letsencrypt-prod
+    #      nginx.ingress.kubernetes.io/proxy-body-size: "512m"
     tls: false
 
   # Switch DEBUG to false if you go into production
@@ -132,13 +132,13 @@ server:
   #  user: user
   #  password: pass
 
-  resources: { }
+  resources: {}
 
-  nodeSelector: { }
+  nodeSelector: {}
 
-  tolerations: [ ]
+  tolerations: []
 
-  affinity: { }
+  affinity: {}
 
   ## Cronjob to execute psono cleanup task
   ## ref: https://doc.psono.com/mydoc_install_server_ee.html
@@ -226,7 +226,7 @@ fileserver:
   serverPublicKey: 'jjn8go7qysaze4qugi1t8he4jdtxfvmwljdb5i5ril4uhteox3f6bie0lbusnurh'
   clusterId: 'a8d561b6-c8bf-43f9-a9d0-ced8780a49b2'
   clusterPrivateKey: '64wnudbnsvcmcka3xy1tz25kpb55crb5caybfr5taj90rqihtwclo2z9h9wm4egu'
-  shards: [{shard_id: fdae83f6-e03e-4718-a32f-e2c68d5d808f, read: True, write: True, delete: True, allow_link_shares: True, engine: {class: 'local', kwargs: {location: '/opt/psono-shard/fdae83f6-e03e-4718-a32f-e2c68d5d808f'}}}]
+  shards: [{shard_id: fdae83f6-e03e-4718-a32f-e2c68d5d808f, read: true, write: true, delete: true, allow_link_shares: true, engine: {class: 'local', kwargs: {location: '/opt/psono-shard/fdae83f6-e03e-4718-a32f-e2c68d5d808f'}}}]
 
   host: fileserver.chart-example.local
   path: "/"
@@ -236,7 +236,7 @@ fileserver:
     enabled: false
     # IngressClass to use; empty uses the cluster's default class
     ingressClassName: ""
-    annotations: { }
+    annotations: {}
     #      kubernetes.io/ingress.class: nginx
     #      kubernetes.io/tls-acme: "true"
     #      cert-manager.io/cluster-issuer: letsencrypt-prod
@@ -244,15 +244,15 @@ fileserver:
 
   persistence:
     enabled: false
-#    storageClassName: my-sc
+    #    storageClassName: my-sc
     size: 8Gi
-  resources: { }
+  resources: {}
 
-  nodeSelector: { }
+  nodeSelector: {}
 
-  tolerations: [ ]
+  tolerations: []
 
-  affinity: { }
+  affinity: {}
 
 # Bundled PostgreSQL (groundhog2k/postgres), enabled with server.db.bundled - meant for local testing only.
 # Database name, user and password are taken from server.db (secret psono-postgres-credentials, created
@@ -285,4 +285,4 @@ postgres:
 compliance:
   securityReport:
     enabled: true
-    interval: 2592000 #seconds
+    interval: 2592000  # seconds
