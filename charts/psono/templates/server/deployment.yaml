@@ -32,7 +32,7 @@ spec:
           emptyDir: {}
       initContainers:
         - name: {{ .Chart.Name }}-check-db-ready
-          image: {{ include "postgres.image" . }}
+          image: {{ include "psono.db.checkImage" . }}
           command: ['sh', '-c',
               'until pg_isready -h {{ include "psono.db.host" . }} -p {{ include "psono.db.port" . }} -U {{ .Values.server.db.user }};
             do echo waiting for database; sleep 2; done;']

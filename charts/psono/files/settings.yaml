@@ -361,7 +361,7 @@ AUTHENTICATION_METHODS: {{ include "psono.server.auth.methods" . }}
 # "localhost" will not work as host. Use the public IP or DNS record of the server.
 DATABASES:
   default:
-    'ENGINE': 'django.db.backends.postgresql_psycopg2'
+    'ENGINE': 'django.db.backends.postgresql'
     'NAME': {{ .Values.server.db.name | default "psono" | squote }}
     'USER': {{ .Values.server.db.user | default "psono" | squote }}
     'PASSWORD': {{ .Values.server.db.password | default "psono" | squote }}
@@ -369,7 +369,7 @@ DATABASES:
     'PORT': '{{ include "psono.db.port" . }}'
 # for master / slave replication setup comment in the following (all reads will be redirected to the slave
 #    slave:
-#        'ENGINE': 'django.db.backends.postgresql_psycopg2'
+#        'ENGINE': 'django.db.backends.postgresql'
 #        'NAME': 'YourPostgresDatabase'
 #        'USER': 'YourPostgresUser'
 #        'PASSWORD': 'YourPostgresPassword'

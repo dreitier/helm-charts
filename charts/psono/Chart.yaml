@@ -9,11 +9,11 @@ annotations:
   # appVersion is synced from this image tag on release
   dreitier.com/app-version-from: .server.image.tag
 dependencies:
-  - name: "postgresql"
-    version: "15.2.0"
-    repository: "https://charts.bitnami.com/bitnami"
+  # bundled PostgreSQL for local testing (official postgres image)
+  - name: "postgres"
+    version: "1.6.8"
+    repository: "https://groundhog2k.github.io/helm-charts/"
     condition: server.db.bundled
 maintainers:
   - name: Thomas Höll
     email: tho@dreitier.com
-
