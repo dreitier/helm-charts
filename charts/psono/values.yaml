@@ -169,7 +169,7 @@ server:
         secretKey:
       image:
         repository: dreitier/gobackup
-        tag: 20220717-dreitier
+        tag: 20251119
         pullPolicy: IfNotPresent
       schedule: "0 0 * * *"
       annotations: {}
