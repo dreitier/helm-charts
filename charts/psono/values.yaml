@@ -214,7 +214,7 @@ fileserver:
 
   image:
     repository: psono/psono-fileserver
-    tag: 5.1.8
+    tag: 7.0.27
     pullPolicy: IfNotPresent
 
   secretKey: 'ew)H7v/_cf>^u&}RPm\M^5Q8/C-~^QLupUknS=5Qkx8{-ez6+}'
