@@ -9,10 +9,16 @@ on:
     paths:
       - 'charts/**'
       - '.github/**'
+      - '.pre-commit-config.yaml'
+      - '.yamllint.yaml'
+      - '.yamlfmt.yaml'
   pull_request:
     paths:
       - 'charts/**'
       - '.github/**'
+      - '.pre-commit-config.yaml'
+      - '.yamllint.yaml'
+      - '.yamlfmt.yaml'
 
 # a new commit on the same branch/PR cancels the previous run
 concurrency:
@@ -20,6 +26,26 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.x"
+
+      # fails if a hook would change files or reports errors; fix locally with "pre-commit run --all-files"
+      - name: Run pre-commit on changed files
+        run: |
+          pip install pre-commit
+          base="origin/${{ github.event.repository.default_branch }}"
+          pre-commit run --show-diff-on-failure --color=always --from-ref "$(git merge-base "$base" HEAD)" --to-ref HEAD
+
   lint-chart:
     runs-on: ubuntu-latest
     steps:

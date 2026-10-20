@@ -15,6 +15,3 @@ data:
   tx-smtp-sasl-security-options: {{ .Values.smtp.saslSecurityOptions | squote }}
   tx-smtp-sasl-tls-security-options: {{ .Values.smtp.saslTlsSecurityOptions | squote }}
   tx-smtp-sasl-security-level: {{ .Values.smtp.saslSecurityLevel | squote }}
-
-
-
