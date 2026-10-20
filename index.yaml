@@ -660,6 +660,27 @@ entries:
   - annotations:
       dreitier.com/app-version-from: .server.image.tag
     apiVersion: v2
+    appVersion: 7.5.1-4.9.0-1.10.1
+    created: "2026-10-20T14:09:44.708147844Z"
+    dependencies:
+    - condition: server.db.bundled
+      name: postgres
+      repository: https://groundhog2k.github.io/helm-charts/
+      version: 1.6.8
+    description: A Helm chart for psono password manager
+    digest: 5bb8a7263f74a9eda2a710283ea3d8302c861771bc992974d77bff206a93301d
+    icon: https://psono.com/web/image/res.company/1/logo
+    maintainers:
+    - email: tho@dreitier.com
+      name: Thomas Höll
+    name: psono
+    type: application
+    urls:
+    - https://github.com/dreitier/helm-charts/releases/download/psono-3.0.0/psono-3.0.0.tgz
+    version: 3.0.0
+  - annotations:
+      dreitier.com/app-version-from: .server.image.tag
+    apiVersion: v2
     appVersion: 5.3.10-4.3.4-1.7.24
     created: "2026-10-20T13:59:30.127028903Z"
     dependencies:
@@ -752,4 +773,4 @@ entries:
     urls:
     - https://github.com/dreitier/helm-charts/releases/download/silencer-1.0.3/silencer-1.0.3.tgz
     version: 1.0.3
-generated: "2026-10-20T13:59:30.127221934Z"
+generated: "2026-10-20T14:09:44.708246238Z"
