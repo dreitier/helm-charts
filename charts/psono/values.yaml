@@ -21,7 +21,7 @@ server:
 
   image:
     repository: psono/psono-combo-enterprise
-    tag: 5.3.10-4.3.4-1.7.24
+    tag: 7.5.1-4.9.0-1.10.1
     pullPolicy: IfNotPresent
 
   nameOverride: ""
@@ -115,11 +115,14 @@ server:
     user: psono
     password: psono
     ssl: false
+    # init container that waits for the database (pg_isready)
+    check:
+      image: postgres:18-alpine
     metrics:
       enabled: false
       image:
-        repository: wrouesnel/postgres_exporter
-        tag: v0.8.0
+        repository: quay.io/prometheuscommunity/postgres-exporter
+        tag: v0.20.1
         pullPolicy: IfNotPresent
 
   mail:
@@ -214,7 +217,7 @@ fileserver:
 
   image:
     repository: psono/psono-fileserver
-    tag: 5.1.8
+    tag: 7.0.27
     pullPolicy: IfNotPresent
 
   secretKey: 'ew)H7v/_cf>^u&}RPm\M^5Q8/C-~^QLupUknS=5Qkx8{-ez6+}'
@@ -251,12 +254,33 @@ fileserver:
 
   affinity: { }
 
-postgresql:
-  persistence:
-    enabled: false
-  primary:
-    initdb:
-      scriptsSecret: psono-postgres-initdb-secret
+# Bundled PostgreSQL (groundhog2k/postgres), enabled with server.db.bundled - meant for local testing only.
+# Database name, user and password are taken from server.db (secret psono-postgres-credentials, created
+# by this chart; the superuser "postgres" uses server.db.password as well). Data is kept in an emptyDir
+# unless postgres.storage.requestedSize is set.
+postgres:
+  settings:
+    existingSecret: psono-postgres-credentials
+    superuserPassword:
+      secretKey: POSTGRES_PASSWORD
+  userDatabase:
+    existingSecret: psono-postgres-credentials
+    name:
+      secretKey: POSTGRES_DB
+    user:
+      secretKey: USERDB_USER
+    password:
+      secretKey: USERDB_PASSWORD
+  # runs after the chart's own script that creates the user database
+  customScripts:
+    02-psono-extensions.sh: |
+      #!/bin/sh
+      set -e
+      psql -v ON_ERROR_STOP=1 --username "${POSTGRES_USER:-postgres}" --dbname "$POSTGRES_DB" <<EOSQL
+      CREATE EXTENSION IF NOT EXISTS pgcrypto;
+      CREATE EXTENSION IF NOT EXISTS ltree;
+      ALTER SCHEMA public OWNER TO "$USERDB_USER";
+      EOSQL
 
 compliance:
   securityReport:

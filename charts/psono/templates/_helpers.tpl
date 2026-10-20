@@ -165,7 +165,14 @@ Create PostgreSQL host name depending on whether an external database is used or
 */}}
 {{- define "psono.db.host" -}}
 {{- if .Values.server.db.bundled -}}
-{{- printf "%s-%s" .Release.Name "postgresql" -}}
+{{- /* same naming as postgres.fullname of the groundhog2k/postgres subchart */ -}}
+{{- if .Values.postgres.fullnameOverride -}}
+{{- .Values.postgres.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else if contains "postgres" .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-postgres" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 {{- else -}}
 {{- .Values.server.db.host -}}
 {{- end -}}
@@ -176,7 +183,7 @@ Create PostgreSQL port depending on whether an external database is used or not
 */}}
 {{- define "psono.db.port" -}}
 {{- if .Values.server.db.bundled -}}
-{{- .Values.postgresql.primary.service.ports.postgresql -}}
+{{- dig "service" "port" 5432 .Values.postgres -}}
 {{- else -}}
 {{- .Values.server.db.port -}}
 {{- end -}}
@@ -194,14 +201,10 @@ disable
 {{- end -}}
 
 {{/*
-Create PostgreSQL container image/tag depending on whether postgres chart is enabled or not
+Image for the init container that waits for the database (pg_isready)
 */}}
-{{- define "postgres.image" -}}
-{{- if .Values.server.db.bundled -}}
-{{- printf "%s:%s" .Values.postgresql.image.repository .Values.postgresql.image.tag -}}
-{{- else -}}
-{{- printf "%s:%s" "bitnami/postgresql" "latest" -}}
-{{- end -}}
+{{- define "psono.db.checkImage" -}}
+{{- (.Values.server.db.check).image | default "postgres:18-alpine" -}}
 {{- end -}}
 
 {{/*
@@ -209,7 +212,7 @@ Create PostgreSQL URI to be used witht he postgres metrics exporter
 */}}
 {{- define "psono.db.uri" -}}
 {{- $dbHost := include "psono.db.host" . -}}
-{{- $dbPort := include "psono.db.host" . -}}
+{{- $dbPort := include "psono.db.port" . -}}
 {{- $sslMode := include "psono.db.ssl-mode" . -}}
 {{- printf "%s:%s/%s?sslmode=%s" $dbHost $dbPort .Values.server.db.name $sslMode -}}
 {{- end -}}
