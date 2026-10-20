@@ -615,6 +615,25 @@ entries:
   psono:
   - apiVersion: v2
     appVersion: 5.2.5-4.3.0-1.7.21
+    created: "2026-10-20T10:45:05.369497603Z"
+    dependencies:
+    - condition: server.db.bundled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 15.2.0
+    description: A Helm chart for psono password manager
+    digest: 8c3fc9eea0e4779e52c6add0cfafcd1344f035bc1b19caa152bfe2f46a4f1327
+    icon: https://psono.com/web/image/res.company/1/logo
+    maintainers:
+    - email: tho@dreitier.com
+      name: Thomas Höll
+    name: psono
+    type: application
+    urls:
+    - https://github.com/dreitier/helm-charts/releases/download/psono-2.5.1/psono-2.5.1.tgz
+    version: 2.5.1
+  - apiVersion: v2
+    appVersion: 5.2.5-4.3.0-1.7.21
     created: "2025-11-19T09:07:19.832929448Z"
     dependencies:
     - condition: server.db.bundled
@@ -668,4 +687,4 @@ entries:
     urls:
     - https://github.com/dreitier/helm-charts/releases/download/silencer-1.0.3/silencer-1.0.3.tgz
     version: 1.0.3
-generated: "2026-02-27T09:25:38.1597995Z"
+generated: "2026-10-20T10:45:05.369570208Z"
