@@ -22,4 +22,3 @@ helm install dreitier/backmon
 | [backmon](charts/backmon) | [backmon - Monitoring of backup files in filesystems and object storages](https://github.com/dreitier/backmon) |
 | [postfix](charts/postfix) | Deploy postfix in Kubernetes for local mail relaying |
 | [psono](charts/psono) | [psono - Deploys the Psono password manager.](https://psono.com/) |
- 

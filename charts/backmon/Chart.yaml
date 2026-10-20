@@ -11,17 +11,17 @@ deprecated: false
 
 home: https://github.com/dreitier/backmon
 maintainers:
-- name: dreitier GmbH
-  email: hello@dreitier.com
-  url: dreitier.com
-- name: Thomas Höll
-  email: tho@dreitier.com
-  url: dreitier.com
+  - name: dreitier GmbH
+    email: hello@dreitier.com
+    url: dreitier.com
+  - name: Thomas Höll
+    email: tho@dreitier.com
+    url: dreitier.com
 keywords:
-- s3
-- minio
-- monitoring
-- backup
-- prometheus
-- grafana
-- objectstorage
+  - s3
+  - minio
+  - monitoring
+  - backup
+  - prometheus
+  - grafana
+  - objectstorage

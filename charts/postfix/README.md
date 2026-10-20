@@ -15,6 +15,6 @@ helm upgrade --install postfix-relay \
         --set smtp.relayHost=${SMTP} \
         --set smtp.relayMyhostname=my.local \
         --set smtp.relayUsername=${USERNAME} \
-        --set smtp.relayPassword=${PASSWORD} \ 
+        --set smtp.relayPassword=${PASSWORD} \
         postfix/helm
 ```
