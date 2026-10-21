@@ -4,8 +4,8 @@ name: backmon
 description: Monitoring of backup files in filesystems and object storages
 type: application
 
-version: 2.5.0
-appVersion: "3.2.2"
+version: 3.0.0
+appVersion: "4.0.1"
 
 deprecated: false
 

@@ -1,3 +1,17 @@
+## [backmon-v3.0.0](https://github.com/dreitier/helm-charts/compare/backmon-2.5.0...backmon-3.0.0) (2026-10-21)
+
+### ⚠ BREAKING CHANGES
+
+* **backmon:** backmon 4.0.1 is a new major version. Check its release
+notes before upgrading:
+https://github.com/dreitier/backmon/releases/tag/4.0.1
+
+Co-authored-by: dreitier-release-bot[bot] <345434585+dreitier-release-bot[bot]@users.noreply.github.com>
+
+### Features
+
+* **backmon:** update backmon to 4.0.1 ([#24](https://github.com/dreitier/helm-charts/issues/24)) ([56c6afb](https://github.com/dreitier/helm-charts/commit/56c6afbe8eb8ff6dbfe537dd75eb84cff6873ff5))
+
 ## [backmon-v2.5.0](https://github.com/dreitier/helm-charts/compare/backmon-2.4.1...backmon-2.5.0) (2026-10-20)
 
 ### Features
