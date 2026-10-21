@@ -12,13 +12,9 @@ on:
       - '.pre-commit-config.yaml'
       - '.yamllint.yaml'
       - '.yamlfmt.yaml'
+  # no path filter: the jobs are required status checks on main, so they have to report on every PR
+  # (lint-chart only lints charts that actually changed)
   pull_request:
-    paths:
-      - 'charts/**'
-      - '.github/**'
-      - '.pre-commit-config.yaml'
-      - '.yamllint.yaml'
-      - '.yamlfmt.yaml'
 
 # a new commit on the same branch/PR cancels the previous run
 concurrency:
