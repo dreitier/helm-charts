@@ -20,15 +20,29 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
+      # main is protected by a ruleset; only the release app may push to it (bypass list)
+      - name: Create GitHub App token
+        id: app
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1  # v3.2.0
+        with:
+          client-id: ${{ vars.RELEASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+
+      # the persisted app token is used by every git push in this job (semantic-release and cr index)
       - name: Checkout
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          token: ${{ steps.app.outputs.token }}
 
       - name: Configure Git
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          APP_SLUG: ${{ steps.app.outputs.app-slug }}
         run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          user_id=$(gh api "/users/${APP_SLUG}[bot]" --jq .id)
+          git config user.name "${APP_SLUG}[bot]"
+          git config user.email "${user_id}+${APP_SLUG}[bot]@users.noreply.github.com"
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
@@ -53,7 +67,7 @@ jobs:
       # No GitHub release is created here, chart-releaser does that below.
       - name: Version charts
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app.outputs.token }}
         run: |
           for chart in charts/*/; do
             name=$(basename "$chart")

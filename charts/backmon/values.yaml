@@ -25,6 +25,8 @@ serviceAccount:
 
 podAnnotations: {}
 
+# backmon >= 4.0.0 runs as non-root user 65532. If it has to read backup files from mounted volumes
+# that this user can't access, set e.g. fsGroup (for group-readable files) or runAsUser.
 podSecurityContext: {}
 # fsGroup: 2000
 
