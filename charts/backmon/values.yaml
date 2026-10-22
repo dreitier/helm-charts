@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: dreitier/backmon
-  tag: "4.0.4"
+  tag: "4.0.5"
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
