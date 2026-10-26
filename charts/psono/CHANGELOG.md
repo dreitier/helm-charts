@@ -1,3 +1,9 @@
+## [psono-v3.0.1](https://github.com/dreitier/helm-charts/compare/psono-3.0.0...psono-3.0.1) (2026-10-26)
+
+### Bug Fixes
+
+* **deps:** bump psono/psono-fileserver from 7.0.27 to 7.0.28 in /charts/psono ([#31](https://github.com/dreitier/helm-charts/issues/31)) ([6e34541](https://github.com/dreitier/helm-charts/commit/6e345417dfa493ca8ac5db91f30a9906be1b1faf))
+
 ## [psono-v3.0.0](https://github.com/dreitier/helm-charts/compare/psono-2.6.0...psono-3.0.0) (2026-10-20)
 
 ### ⚠ BREAKING CHANGES
