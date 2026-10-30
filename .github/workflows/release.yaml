@@ -125,7 +125,7 @@ jobs:
       # ("latest_tag: unbound variable", fixed on main but not released yet)
       - name: Install chart-releaser
         if: steps.package.outputs.packaged == 'true'
-        uses: helm/chart-releaser-action@v1.7.0
+        uses: helm/chart-releaser-action@v1.8.0
         with:
           install_only: true
 
