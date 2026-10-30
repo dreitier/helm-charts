@@ -2,6 +2,32 @@ apiVersion: v1
 entries:
   backmon:
   - apiVersion: v2
+    appVersion: 4.0.7
+    created: "2026-10-30T06:21:13.169754572Z"
+    description: Monitoring of backup files in filesystems and object storages
+    digest: f579017a32de51b0ac6f28f247bcf408820918ac626cef4833912b21d98c09d5
+    home: https://github.com/dreitier/backmon
+    keywords:
+    - s3
+    - minio
+    - monitoring
+    - backup
+    - prometheus
+    - grafana
+    - objectstorage
+    maintainers:
+    - email: hello@dreitier.com
+      name: dreitier GmbH
+      url: dreitier.com
+    - email: tho@dreitier.com
+      name: Thomas Höll
+      url: dreitier.com
+    name: backmon
+    type: application
+    urls:
+    - https://github.com/dreitier/helm-charts/releases/download/backmon-3.0.6/backmon-3.0.6.tgz
+    version: 3.0.6
+  - apiVersion: v2
     appVersion: 4.0.6
     created: "2026-10-23T07:23:44.454798376Z"
     description: Monitoring of backup files in filesystems and object storages
@@ -816,6 +842,27 @@ entries:
   - annotations:
       dreitier.com/app-version-from: .server.image.tag
     apiVersion: v2
+    appVersion: 7.5.5.4.9.2.1.10.3
+    created: "2026-10-30T06:21:13.342100869Z"
+    dependencies:
+    - condition: server.db.bundled
+      name: postgres
+      repository: https://groundhog2k.github.io/helm-charts/
+      version: 1.6.8
+    description: A Helm chart for psono password manager
+    digest: c1af460567bd1a12fbe7e1505372684d1f270a318266a7619952cc78df27e7ff
+    icon: https://psono.com/web/image/res.company/1/logo
+    maintainers:
+    - email: tho@dreitier.com
+      name: Thomas Höll
+    name: psono
+    type: application
+    urls:
+    - https://github.com/dreitier/helm-charts/releases/download/psono-3.0.3/psono-3.0.3.tgz
+    version: 3.0.3
+  - annotations:
+      dreitier.com/app-version-from: .server.image.tag
+    apiVersion: v2
     appVersion: 7.5.3.4.9.1.1.10.2
     created: "2026-10-26T13:45:39.022202713Z"
     dependencies:
@@ -971,4 +1018,4 @@ entries:
     urls:
     - https://github.com/dreitier/helm-charts/releases/download/silencer-1.0.3/silencer-1.0.3.tgz
     version: 1.0.3
-generated: "2026-10-26T13:45:39.022310554Z"
+generated: "2026-10-30T06:21:13.342217061Z"
