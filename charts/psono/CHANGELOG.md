@@ -1,3 +1,9 @@
+## [psono-v3.1.0](https://github.com/dreitier/helm-charts/compare/psono-3.0.4...psono-3.1.0) (2026-11-03)
+
+### Features
+
+* **psono:** existingSecret, extra env/volumes and fileserver service account ([#45](https://github.com/dreitier/helm-charts/issues/45)) ([aee7d1a](https://github.com/dreitier/helm-charts/commit/aee7d1a477a3eeed3599a33e24371b1ffb7d0855))
+
 ## [psono-v3.0.4](https://github.com/dreitier/helm-charts/compare/psono-3.0.3...psono-3.0.4) (2026-11-03)
 
 ### Bug Fixes
