@@ -1,9 +1,5 @@
 {{- if .Values.server.cronjob.backup.enabled }}
-{{- if .Capabilities.APIVersions.Has "batch/v1/CronJob" -}}
 apiVersion: batch/v1
-{{- else }}
-apiVersion: batch/v1beta1
-{{- end }}
 kind: CronJob
 metadata:
   name: {{ template "psono.server.fullname" . }}-backup
@@ -70,13 +66,13 @@ spec:
                 - name: DB_USER
                   valueFrom:
                     secretKeyRef:
-                      key: dbUser
-                      name: {{ include "psono.server.fullname" . }}
+                      key: {{ include "psono.server.dbUserKey" . }}
+                      name: {{ include "psono.server.dbSecretName" . }}
                 - name: DB_PASS
                   valueFrom:
                     secretKeyRef:
-                      key: dbPass
-                      name: {{ include "psono.server.fullname" . }}
+                      key: {{ include "psono.server.dbPassKey" . }}
+                      name: {{ include "psono.server.dbSecretName" . }}
                 - name: SECRET_ACCESS_KEY
                   value: {{ .Values.server.cronjob.backup.bucket.secretKey }}
                 {{- if .Values.server.cronjob.backup.encryption }}

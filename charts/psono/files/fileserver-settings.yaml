@@ -1,10 +1,15 @@
+{{- /* with fileserver.existingSecret these come from the environment: PSONOFS_SECRET_KEY, … */ -}}
+{{- if not .Values.fileserver.existingSecret -}}
 SECRET_KEY: {{ .Values.fileserver.secretKey | squote }}
 PRIVATE_KEY: {{ .Values.fileserver.privateKey | squote }}
 PUBLIC_KEY: {{ .Values.fileserver.publicKey | squote }}
+{{- end }}
 SERVER_URL: {{ include "psono.server.externalUrl" . | trimSuffix "/" | squote }}
 SERVER_PUBLIC_KEY: {{ .Values.fileserver.serverPublicKey | squote }}
+{{- if not .Values.fileserver.existingSecret }}
 CLUSTER_ID: {{ .Values.fileserver.clusterId | squote }}
 CLUSTER_PRIVATE_KEY: {{ .Values.fileserver.clusterPrivateKey | squote }}
+{{- end }}
 SHARDS: {{ .Values.fileserver.shards | toJson }}
 
 # Disable SSL verification for the SERVER_URL (don't use this in production)

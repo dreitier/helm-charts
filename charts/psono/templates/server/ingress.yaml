@@ -2,7 +2,7 @@
 {{- $secretName := printf "%s-tls" ( include "psono.server.fullname" . ) }}
 {{- $serviceName := include "psono.server.fullname" . }}
 {{- $servicePort := .Values.server.service.port -}}
-apiVersion: {{ template "ingress.apiVersion" . }}
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ template "psono.server.fullname" . }}
@@ -13,10 +13,8 @@ metadata:
   {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if or (.Capabilities.APIVersions.Has "networking.k8s.io/v1/IngressClass") (.Capabilities.APIVersions.Has "networking.k8s.io/v1beta1/IngressClass") }}
-  {{- if .Values.server.ingress.ingressClassName }}
-  ingressClassName: {{ .Values.server.ingress.ingressClassName }}
-  {{- end }}
+  {{- with .Values.server.ingress.ingressClassName }}
+  ingressClassName: {{ . }}
   {{- end }}
   rules:
     - host: {{ .Values.server.host }}
@@ -25,15 +23,10 @@ spec:
           - path: "/" {{/*          {{ .Values.server.path }}*/}}
             pathType: Prefix
             backend:
-            {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/IngressClass" }}
               service:
                 name: {{ $serviceName }}
                 port:
                   number: {{ $servicePort }}
-            {{- else if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1/IngressClass" }}
-              serviceName: {{ $serviceName }}
-              servicePort: {{ $servicePort }}
-            {{- end }}
   {{- if .Values.server.ingress.tls }}
   tls:
     - hosts:

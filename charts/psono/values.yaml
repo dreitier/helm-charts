@@ -143,6 +143,23 @@ server:
   ## Cronjob to execute psono cleanup task
   ## ref: https://doc.psono.com/mydoc_install_server_ee.html
   ##
+  # Secrets from an existing Secret instead of values (e.g. rendered by external-secrets). The Secret is
+  # passed as environment (envFrom) to the server, its init containers and cron jobs; Psono reads every
+  # setting from PSONO_<SETTING> (JSON for lists/dicts). When set, the chart leaves the following settings
+  # out of settings.yaml, so the Secret must provide them:
+  #   PSONO_SECRET_KEY, PSONO_ACTIVATION_LINK_SECRET, PSONO_DB_SECRET, PSONO_EMAIL_SECRET_SALT,
+  #   PSONO_PRIVATE_KEY, PSONO_PUBLIC_KEY, PSONO_DATABASES_DEFAULT_USER, PSONO_DATABASES_DEFAULT_PASSWORD
+  #   and, with ldap.enabled, PSONO_LDAP (the whole LDAP list as JSON, incl. LDAP_BIND_PASS)
+  # The values secretKey … publicKey, db.user/db.password and ldap.* are ignored then.
+  existingSecret: ""
+
+  # Additional environment, envFrom sources, volumes and volume mounts for the server container
+  # (e.g. AWS_ROLE_ARN + projected service account token for IRSA)
+  extraEnv: []
+  extraEnvFrom: []
+  extraVolumes: []
+  extraVolumeMounts: []
+
   cronjob:
     cleanup:
       enabled: true
@@ -227,6 +244,23 @@ fileserver:
   clusterId: 'a8d561b6-c8bf-43f9-a9d0-ced8780a49b2'
   clusterPrivateKey: '64wnudbnsvcmcka3xy1tz25kpb55crb5caybfr5taj90rqihtwclo2z9h9wm4egu'
   shards: [{shard_id: fdae83f6-e03e-4718-a32f-e2c68d5d808f, read: true, write: true, delete: true, allow_link_shares: true, engine: {class: 'local', kwargs: {location: '/opt/psono-shard/fdae83f6-e03e-4718-a32f-e2c68d5d808f'}}}]
+
+  # Secrets from an existing Secret instead of values (see server.existingSecret). The fileserver reads
+  # every setting from PSONOFS_<SETTING> (JSON for lists/dicts). When set, the chart leaves SECRET_KEY,
+  # PRIVATE_KEY, PUBLIC_KEY, CLUSTER_ID and CLUSTER_PRIVATE_KEY out of settings.yaml, so the Secret must
+  # provide PSONOFS_SECRET_KEY, PSONOFS_PRIVATE_KEY, PSONOFS_PUBLIC_KEY, PSONOFS_CLUSTER_ID and
+  # PSONOFS_CLUSTER_PRIVATE_KEY. Shards with credentials: put the whole list into PSONOFS_SHARDS (JSON);
+  # shards.engine.class (local or not) is still read from values for the volumes.
+  existingSecret: ""
+
+  # Additional environment, envFrom sources, volumes and volume mounts for the fileserver container.
+  # IRSA for an amazon_s3 shard: annotate serviceAccounts.fileserver, add AWS_ROLE_ARN,
+  # AWS_WEB_IDENTITY_TOKEN_FILE, AWS_REGION and a projected token volume, omit access_key/secret_key in
+  # the shard kwargs (boto3 then uses the web identity token)
+  extraEnv: []
+  extraEnvFrom: []
+  extraVolumes: []
+  extraVolumeMounts: []
 
   host: fileserver.chart-example.local
   path: "/"

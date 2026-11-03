@@ -30,6 +30,9 @@ spec:
             name: {{ include "psono.client.fullname" . }}
         - name: logs
           emptyDir: {}
+        {{- with .Values.server.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       initContainers:
         - name: {{ .Chart.Name }}-check-db-ready
           image: {{ include "psono.db.checkImage" . }}
@@ -49,6 +52,13 @@ spec:
               subPath: settings.yaml
             - name: logs
               mountPath: /var/log/psono
+          {{- with include "psono.server.envFrom" . }}
+          {{- . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.server.extraEnv }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           command: ["/usr/local/bin/python3"]
           args:
             - "./psono/manage.py"
@@ -71,12 +81,23 @@ spec:
               subPath: config.json
             - name: logs
               mountPath: /var/log/psono
+            {{- with .Values.server.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           ports:
             - name: http
               containerPort: 80
               protocol: TCP
-          {{- if .Values.fileserver.enabled }}
+          {{- with include "psono.server.envFrom" . }}
+          {{- . | nindent 10 }}
+          {{- end }}
+          {{- if or .Values.fileserver.enabled .Values.server.extraEnv }}
           env:
+            {{- with .Values.server.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.fileserver.enabled }}
             - name: NGINX_HEADER_CONTENT_SECURITY_POLICY
               value: >-
                 "default-src \'none\'; manifest-src \'self\'; connect-src \'self\' {{ include "psono.fileserver.externalUrl" . }} https://static.psono.com https://keyserver.ubuntu.com https://storage.googleapis.com https://*.blob.core.windows.net https://*.s3.amazonaws.com https://*.digitaloceanspaces.com https://api.pwnedpasswords.com https://sentry.io; font-src \'self\'; img-src \'self\' www.google-analytics.com data:; script-src \'self\' www.google-analytics.com; style-src \'self\' \'unsafe-inline\'; object-src \'self\'; child-src \'self\'; form-action \'self\'"
@@ -112,13 +133,13 @@ spec:
             - name: DATA_SOURCE_USER
               valueFrom:
                 secretKeyRef:
-                  key: dbUser
-                  name: {{ include "psono.server.fullname" . }}
+                  key: {{ include "psono.server.dbUserKey" . }}
+                  name: {{ include "psono.server.dbSecretName" . }}
             - name: DATA_SOURCE_PASS
               valueFrom:
                 secretKeyRef:
-                  key: dbPass
-                  name: {{ include "psono.server.fullname" . }}
+                  key: {{ include "psono.server.dbPassKey" . }}
+                  name: {{ include "psono.server.dbSecretName" . }}
           ports:
             - containerPort: 9187
               name: pg-metrics

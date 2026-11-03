@@ -1,11 +1,13 @@
 # generate the following six parameters with the following command
 # docker run --rm -ti psono/psono-server:latest python3 ./psono/manage.py generateserverkeys
+{{- if not .Values.server.existingSecret }}
 SECRET_KEY: {{ .Values.server.secretKey | squote }}
 ACTIVATION_LINK_SECRET: {{ .Values.server.activationLinkSecret | squote }}
 DB_SECRET: {{ .Values.server.dbSecret | squote }}
 EMAIL_SECRET_SALT: {{ .Values.server.emailSecretSalt | squote }}
 PRIVATE_KEY: {{ .Values.server.privateKey | squote }}
 PUBLIC_KEY: {{ .Values.server.publicKey | squote }}
+{{- end }}
 
 # The URL of the web client (path to e.g activate.html without the trailing slash)
   {{- if .Values.client.enabled }}
@@ -225,7 +227,8 @@ COMPLIANCE_CENTRAL_SECURITY_REPORT_SECURITY_RECURRENCE_INTERVAL: {{ .Values.comp
 #
 # ATTENTION: API kays currently bypass LDAP authentication, that means API keys can still access secrets even if the
 # user was disabled in LDAP. API keys can be disabled with COMPLIANCE_DISABLE_API_KEYS
-  {{- if .Values.server.ldap.enabled }}
+  {{- /* with server.existingSecret the LDAP list (incl. bind password) comes from PSONO_LDAP */}}
+  {{- if and .Values.server.ldap.enabled (not .Values.server.existingSecret) }}
   {{- with .Values.server.ldap }}
 LDAP : [
   {
@@ -363,8 +366,10 @@ DATABASES:
   default:
     'ENGINE': 'django.db.backends.postgresql'
     'NAME': {{ .Values.server.db.name | default "psono" | squote }}
+    {{- if not .Values.server.existingSecret }}
     'USER': {{ .Values.server.db.user | default "psono" | squote }}
     'PASSWORD': {{ .Values.server.db.password | default "psono" | squote }}
+    {{- end }}
     'HOST': '{{ include "psono.db.host" . }}'
     'PORT': '{{ include "psono.db.port" . }}'
 # for master / slave replication setup comment in the following (all reads will be redirected to the slave

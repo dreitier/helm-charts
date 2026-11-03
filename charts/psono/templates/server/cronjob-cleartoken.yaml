@@ -1,9 +1,5 @@
 {{- if .Values.server.cronjob.cleanup.enabled }}
-{{- if .Capabilities.APIVersions.Has "batch/v1/CronJob" -}}
 apiVersion: batch/v1
-{{- else }}
-apiVersion: batch/v1beta1
-{{- end }}
 kind: CronJob
 metadata:
   name: {{ template "psono.server.fullname" . }}-cleartoken
@@ -46,6 +42,9 @@ spec:
                 - name: config
                   mountPath: /root/.psono_server/settings.yaml
                   subPath: settings.yaml
+              {{- with include "psono.server.envFrom" . }}
+              {{- . | nindent 14 }}
+              {{- end }}
               command: [ "/usr/local/bin/python3" ]
               args:
                 - "./psono/manage.py"
