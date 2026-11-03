@@ -18,7 +18,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Chart.Name "/templates/fileserver/secret.yaml") . | sha256sum }}
     spec:
-      serviceAccountName: {{ template "psono.serviceAccountName.fileserver"  }}
+      serviceAccountName: {{ include "psono.serviceAccountName.fileserver" . }}
       volumes:
         - name: config
           secret:
@@ -33,6 +33,9 @@ spec:
             { }
           {{- end }}
         {{- end }}
+        {{- with .Values.fileserver.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       initContainers:
         - name: {{ .Chart.Name }}-fileserver-testconfig
           image: "{{ .Values.fileserver.image.repository }}:{{ .Values.fileserver.image.tag }}"
@@ -45,6 +48,16 @@ spec:
             - name: data
               mountPath: {{ $shard.engine.kwargs.location }}
               {{- end }}
+            {{- with .Values.fileserver.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with include "psono.fileserver.envFrom" . }}
+          {{- . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.fileserver.extraEnv }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           command:
             - python3
             - ./psono/manage.py
@@ -63,6 +76,16 @@ spec:
             - name: data
               mountPath: {{ $shard.engine.kwargs.location }}
             {{- end }}
+            {{- with .Values.fileserver.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with include "psono.fileserver.envFrom" . }}
+          {{- . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.fileserver.extraEnv }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           ports:
             - name: http
               containerPort: 80

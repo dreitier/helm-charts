@@ -75,17 +75,6 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
-Return the appropriate apiVersion for ingress.
-*/}}
-{{- define "ingress.apiVersion" -}}
-{{- if semverCompare ">=1.19.0" .Capabilities.KubeVersion.GitVersion }}
-{{- print "networking.k8s.io/v1" -}}
-{{- else if semverCompare ">=v1.14.0" .Capabilities.KubeVersion.GitVersion -}}
-{{- print "networking.k8s.io/v1beta1" -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
 Create unified labels for psono components
 */}}
 {{- define "psono.common.matchLabels" -}}
@@ -235,4 +224,49 @@ Create AUTHENTICATION_METHODS based on settings
 {{- $saml := .Values.server.saml.enabled | ternary ",\"SAML\"" ""  -}}
 {{- $oidc := .Values.server.oidc.enabled | ternary ",\"OIDC\"" ""  -}}
 {{- printf "[ \"AUTHKEY\"%s%s%s ]" $ldap $saml $oidc -}}
+{{- end -}}
+
+{{/*
+Secret holding the database credentials (server.existingSecret or the chart's server secret) and its keys
+*/}}
+{{- define "psono.server.dbSecretName" -}}
+{{- default (include "psono.server.fullname" .) .Values.server.existingSecret -}}
+{{- end -}}
+{{- define "psono.server.dbUserKey" -}}
+{{- ternary "PSONO_DATABASES_DEFAULT_USER" "dbUser" (not (empty .Values.server.existingSecret)) -}}
+{{- end -}}
+{{- define "psono.server.dbPassKey" -}}
+{{- ternary "PSONO_DATABASES_DEFAULT_PASSWORD" "dbPass" (not (empty .Values.server.existingSecret)) -}}
+{{- end -}}
+
+{{/*
+envFrom of the server containers (server, db-migrate, cron jobs). Call with the root context.
+*/}}
+{{- define "psono.server.envFrom" -}}
+{{- if or .Values.server.existingSecret .Values.server.extraEnvFrom -}}
+envFrom:
+  {{- with .Values.server.existingSecret }}
+  - secretRef:
+      name: {{ . }}
+  {{- end }}
+  {{- with .Values.server.extraEnvFrom }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
+envFrom of the fileserver containers (fileserver, testconfig). Call with the root context.
+*/}}
+{{- define "psono.fileserver.envFrom" -}}
+{{- if or .Values.fileserver.existingSecret .Values.fileserver.extraEnvFrom -}}
+envFrom:
+  {{- with .Values.fileserver.existingSecret }}
+  - secretRef:
+      name: {{ . }}
+  {{- end }}
+  {{- with .Values.fileserver.extraEnvFrom }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+{{- end }}
 {{- end -}}
