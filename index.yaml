@@ -2,6 +2,32 @@ apiVersion: v1
 entries:
   backmon:
   - apiVersion: v2
+    appVersion: 4.0.9
+    created: "2026-11-03T12:38:47.810930552Z"
+    description: Monitoring of backup files in filesystems and object storages
+    digest: 600315aa68e4f862b89b8bf14a5978224034785910671c89f41ec96333b24100
+    home: https://github.com/dreitier/backmon
+    keywords:
+    - s3
+    - minio
+    - monitoring
+    - backup
+    - prometheus
+    - grafana
+    - objectstorage
+    maintainers:
+    - email: hello@dreitier.com
+      name: dreitier GmbH
+      url: dreitier.com
+    - email: tho@dreitier.com
+      name: Thomas Höll
+      url: dreitier.com
+    name: backmon
+    type: application
+    urls:
+    - https://github.com/dreitier/helm-charts/releases/download/backmon-3.0.8/backmon-3.0.8.tgz
+    version: 3.0.8
+  - apiVersion: v2
     appVersion: 4.0.8
     created: "2026-11-03T12:22:35.461096117Z"
     description: Monitoring of backup files in filesystems and object storages
@@ -1065,4 +1091,4 @@ entries:
     urls:
     - https://github.com/dreitier/helm-charts/releases/download/silencer-1.0.3/silencer-1.0.3.tgz
     version: 1.0.3
-generated: "2026-11-03T12:22:35.778796247Z"
+generated: "2026-11-03T12:38:47.811081681Z"
