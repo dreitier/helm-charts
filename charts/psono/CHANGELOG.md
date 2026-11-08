@@ -1,3 +1,9 @@
+## [psono-v3.1.2](https://github.com/dreitier/helm-charts/compare/psono-3.1.1...psono-3.1.2) (2026-11-08)
+
+### Bug Fixes
+
+* **psono:** leave OIDC_CONFIGURATIONS to PSONO_OIDC_CONFIGURATIONS with existingSecret ([#50](https://github.com/dreitier/helm-charts/issues/50)) ([453dbe4](https://github.com/dreitier/helm-charts/commit/453dbe4ebf6b1cb3f20b9539e84cff6023e35e05))
+
 ## [psono-v3.1.1](https://github.com/dreitier/helm-charts/compare/psono-3.1.0...psono-3.1.1) (2026-11-05)
 
 ### Bug Fixes

@@ -6,7 +6,7 @@ kubeVersion: ">=1.21.0-0"
 description: A Helm chart for psono password manager
 icon: https://psono.com/web/image/res.company/1/logo
 name: psono
-version: 3.1.1
+version: 3.1.2
 annotations:
   # appVersion is synced from this image tag on release
   dreitier.com/app-version-from: .server.image.tag
