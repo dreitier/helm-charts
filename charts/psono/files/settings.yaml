@@ -337,7 +337,8 @@ SAML_CONFIGURATIONS:
 {{- end }}
 
 
-{{- if .Values.server.oidc.enabled }}
+{{- /* with server.existingSecret the OIDC provider (incl. the client secret) comes from PSONO_OIDC_CONFIGURATIONS */}}
+{{- if and .Values.server.oidc.enabled (not .Values.server.existingSecret) }}
 {{- with .Values.server.oidc }}
 OIDC_CONFIGURATIONS:
   1:
