@@ -28,7 +28,7 @@ leaves these settings out of `settings.yaml`, so the Secret has to provide them:
 
 | Component | Keys |
 |---|---|
-| server | `PSONO_SECRET_KEY`, `PSONO_ACTIVATION_LINK_SECRET`, `PSONO_DB_SECRET`, `PSONO_EMAIL_SECRET_SALT`, `PSONO_PRIVATE_KEY`, `PSONO_PUBLIC_KEY`, `PSONO_DATABASES_DEFAULT_USER`, `PSONO_DATABASES_DEFAULT_PASSWORD`; with `server.ldap.enabled` also `PSONO_LDAP` (whole LDAP list as JSON) |
+| server | `PSONO_SECRET_KEY`, `PSONO_ACTIVATION_LINK_SECRET`, `PSONO_DB_SECRET`, `PSONO_EMAIL_SECRET_SALT`, `PSONO_PRIVATE_KEY`, `PSONO_PUBLIC_KEY`, `PSONO_DATABASES_DEFAULT_USER`, `PSONO_DATABASES_DEFAULT_PASSWORD`; with `server.ldap.enabled` also `PSONO_LDAP` (whole LDAP list as JSON); with `server.oidc.enabled` also `PSONO_OIDC_CONFIGURATIONS` (JSON `{"1": {"OIDC_RP_CLIENT_ID": …, "OIDC_RP_CLIENT_SECRET": …, "OIDC_OP_…_ENDPOINT": …}}`) |
 | fileserver | `PSONOFS_SECRET_KEY`, `PSONOFS_PRIVATE_KEY`, `PSONOFS_PUBLIC_KEY`, `PSONOFS_CLUSTER_ID`, `PSONOFS_CLUSTER_PRIVATE_KEY`; shards with credentials: `PSONOFS_SHARDS` (JSON) |
 
 The database credentials for the postgres-exporter sidecar and the backup cron job are read from the same

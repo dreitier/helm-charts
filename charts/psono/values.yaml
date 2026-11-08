@@ -149,8 +149,11 @@ server:
   # out of settings.yaml, so the Secret must provide them:
   #   PSONO_SECRET_KEY, PSONO_ACTIVATION_LINK_SECRET, PSONO_DB_SECRET, PSONO_EMAIL_SECRET_SALT,
   #   PSONO_PRIVATE_KEY, PSONO_PUBLIC_KEY, PSONO_DATABASES_DEFAULT_USER, PSONO_DATABASES_DEFAULT_PASSWORD
-  #   and, with ldap.enabled, PSONO_LDAP (the whole LDAP list as JSON, incl. LDAP_BIND_PASS)
-  # The values secretKey … publicKey, db.user/db.password and ldap.* are ignored then.
+  #   with ldap.enabled, PSONO_LDAP (the whole LDAP list as JSON, incl. LDAP_BIND_PASS)
+  #   and, with oidc.enabled, PSONO_OIDC_CONFIGURATIONS (JSON object {"1": {OIDC_RP_CLIENT_ID, OIDC_RP_CLIENT_SECRET,
+  #   OIDC_OP_*_ENDPOINT, …}}, the same keys as settings.yaml)
+  # The values secretKey … publicKey, db.user/db.password, ldap.* and oidc.* (except oidc.enabled, which
+  # still switches the OIDC login on and the client's button) are ignored then.
   existingSecret: ""
 
   # Additional environment, envFrom sources, volumes and volume mounts for the server container
