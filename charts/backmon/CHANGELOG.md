@@ -1,3 +1,9 @@
+## [backmon-v3.0.11](https://github.com/dreitier/helm-charts/compare/backmon-3.0.10...backmon-3.0.11) (2026-11-09)
+
+### Bug Fixes
+
+* **backmon:** update backmon to 4.0.12 ([#52](https://github.com/dreitier/helm-charts/issues/52)) ([4342fcd](https://github.com/dreitier/helm-charts/commit/4342fcdc01f2311ffa951fb4c1def1e803bc50ba))
+
 ## [backmon-v3.0.10](https://github.com/dreitier/helm-charts/compare/backmon-3.0.9...backmon-3.0.10) (2026-11-06)
 
 ### Bug Fixes
