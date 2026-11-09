@@ -15,6 +15,15 @@ helm search backmon
 helm install dreitier/backmon
 ```
 
+## OCI registry
+
+All charts are also published as OCI artifacts to the GitHub Container Registry. No `helm repo add` is needed (Helm >= 3.8):
+
+```bash
+helm install backmon oci://ghcr.io/dreitier/charts/backmon --version <version>
+helm show values oci://ghcr.io/dreitier/charts/backmon
+```
+
 # Available Helm charts
 
 | Chart | Description |
