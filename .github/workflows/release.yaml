@@ -14,10 +14,16 @@ concurrency:
   group: release
   cancel-in-progress: false
 
+# charts are additionally published as OCI artifacts: oci://ghcr.io/<owner>/charts/<chart>
+env:
+  OCI_REPOSITORY: ghcr.io/${{ github.repository_owner }}/charts
+
 jobs:
   release:
     permissions:
       contents: write
+      # push charts to GHCR
+      packages: write
     runs-on: ubuntu-latest
     steps:
       # main is protected by a ruleset; only the release app may push to it (bypass list)
@@ -120,6 +126,27 @@ jobs:
           if compgen -G ".cr-release-packages/*.tgz" > /dev/null; then
             echo "packaged=true" >> "$GITHUB_OUTPUT"
           fi
+
+      # Runs before chart-releaser on purpose: packaging is keyed on the GitHub release, so once
+      # cr has created it, a failed OCI push would never be retried. Versions already in the
+      # registry are skipped, so a re-run after a failed cr upload doesn't push twice.
+      - name: Push charts to OCI registry
+        if: steps.package.outputs.packaged == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REGISTRY_USER: ${{ github.actor }}
+        run: |
+          echo "$GH_TOKEN" | helm registry login "${OCI_REPOSITORY%%/*}" --username "$REGISTRY_USER" --password-stdin
+          for pkg in .cr-release-packages/*.tgz; do
+            name=$(helm show chart "$pkg" | yq '.name')
+            version=$(helm show chart "$pkg" | yq '.version')
+            if helm show chart "oci://${OCI_REPOSITORY}/${name}" --version "$version" > /dev/null 2>&1; then
+              echo "${name}-${version}: already in oci://${OCI_REPOSITORY}"
+              continue
+            fi
+            helm push "$pkg" "oci://${OCI_REPOSITORY}"
+          done
+          helm registry logout "${OCI_REPOSITORY%%/*}"
 
       # The action is only used to install cr: with skip_packaging, v1.7.0 fails at the end
       # ("latest_tag: unbound variable", fixed on main but not released yet)
