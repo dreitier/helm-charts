@@ -1,0 +1,58 @@
+---
+name: Backfill OCI Registry
+
+# Manually pushes chart versions released before OCI publishing existed to the registry.
+# Uses the .tgz assets of the existing GitHub releases, so the OCI artifacts are byte-identical
+# to what the classic Helm repository serves. Versions already in the registry are skipped,
+# so the workflow can be run any number of times.
+on:
+  workflow_dispatch:
+
+# don't interfere with a running release
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+env:
+  OCI_REPOSITORY: ghcr.io/${{ github.repository_owner }}/charts
+
+jobs:
+  backfill:
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Helm
+        uses: azure/setup-helm@v5
+        with:
+          version: v3.16.4
+
+      - name: Download released chart packages
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p packages
+          gh release list --repo "$GITHUB_REPOSITORY" --limit 1000 --json tagName --jq '.[].tagName' |
+            while read -r tag; do
+              gh release download "$tag" --repo "$GITHUB_REPOSITORY" --pattern '*.tgz' --dir packages --skip-existing ||
+                echo "::warning::${tag}: no chart package attached"
+            done
+          ls -1 packages
+
+      - name: Push missing versions to OCI registry
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REGISTRY_USER: ${{ github.actor }}
+        run: |
+          echo "$GH_TOKEN" | helm registry login "${OCI_REPOSITORY%%/*}" --username "$REGISTRY_USER" --password-stdin
+          for pkg in packages/*.tgz; do
+            name=$(helm show chart "$pkg" | yq '.name')
+            version=$(helm show chart "$pkg" | yq '.version')
+            if helm show chart "oci://${OCI_REPOSITORY}/${name}" --version "$version" > /dev/null 2>&1; then
+              echo "${name}-${version}: already in oci://${OCI_REPOSITORY}"
+              continue
+            fi
+            helm push "$pkg" "oci://${OCI_REPOSITORY}"
+          done
+          helm registry logout "${OCI_REPOSITORY%%/*}"
