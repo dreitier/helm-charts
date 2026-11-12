@@ -1,3 +1,9 @@
+## [backmon-v3.0.12](https://github.com/dreitier/helm-charts/compare/backmon-3.0.11...backmon-3.0.12) (2026-11-12)
+
+### Bug Fixes
+
+* **backmon:** alert on the status semantics of backmon 5 and probe /metrics ([#58](https://github.com/dreitier/helm-charts/issues/58)) ([17a91ac](https://github.com/dreitier/helm-charts/commit/17a91ac89b3c72e789cd6a550559eec4a5669ff3))
+
 ## [backmon-v3.0.11](https://github.com/dreitier/helm-charts/compare/backmon-3.0.10...backmon-3.0.11) (2026-11-09)
 
 ### Bug Fixes
