@@ -100,6 +100,13 @@ prometheusRules:
   backupCountExceeding:
     enabled: true
     thresholdPercentage: 0.25
+  # fires if the oldest backup is older than maxAgeHours, i.e. old backups are not purged anymore.
+  # Disabled by default: only useful for files with `purge: true`, set maxAgeHours to their retention-age plus a grace period.
+  # Unlike backupCountExceeding it doesn't fire if additional backups are created (e.g. before each deployment).
+  backupPurgeStalled:
+    enabled: false
+    maxAgeHours: 384
+    for: 6h
   backupCountShort:
     enabled: true
     thresholdPercentage: 0.75

@@ -42,6 +42,19 @@ The following tables lists the configurable parameters of the backmon chart and 
 | `createConfigFile`         | Whether to create the config file. Set to ```false``` to supply your own, for example via a secret.                                                                       | `true`                                                   |
 | `serviceMonitor.enabled`   | Whether to deploy a ServiceMonitor object to make Prometheus scrape the application metrics. Requires the corresponding CRD to be installed                               | `true`                                                   |
 | `prometheusRules.enabled`  | Whether to deploy PrometheusRule objects to monitor the state of backups. Requires the corresponding CRD to be installed | `false`                                                  |
+| `prometheusRules.backupOverdue.enabled` | Alert `BackupOverdue`: the latest backup is older than expected | `true` |
+| `prometheusRules.backupOverdue.gracePeriod` | Hours a backup may be overdue before `BackupOverdue` fires | `24` |
+| `prometheusRules.backupCountExceeding.enabled` | Alert `BackupCountExceeding`: more backups than `retention-count` (plus threshold) are present | `true` |
+| `prometheusRules.backupCountExceeding.thresholdPercentage` | Share of `retention-count` the number of backups may exceed it | `0.25` |
+| `prometheusRules.backupPurgeStalled.enabled` | Alert `BackupPurgeStalled`: the oldest backup is older than `maxAgeHours`, i.e. backups are not purged anymore. Only useful for files with `purge: true`. Alternative to `BackupCountExceeding` if additional backups are expected, e.g. before deployments | `false` |
+| `prometheusRules.backupPurgeStalled.maxAgeHours` | Maximum age of the oldest backup in hours; set it to `retention-age` plus a grace period | `384` |
+| `prometheusRules.backupPurgeStalled.for` | How long the condition has to hold before `BackupPurgeStalled` fires | `6h` |
+| `prometheusRules.backupCountShort.enabled` | Alert `BackupCountShort`: fewer backups than `retention-count` times threshold are present | `true` |
+| `prometheusRules.backupCountShort.thresholdPercentage` | Share of `retention-count` that has to be present | `0.75` |
+| `prometheusRules.backupMissing.enabled` | Alert `BackupMissing`: a monitored backup disappeared | `true` |
+| `prometheusRules.backupSizeChanged.enabled` | Alert `BackupSizeChanged`: the size of the latest backup changed by more than the threshold within an hour | `true` |
+| `prometheusRules.backupSizeChanged.thresholdPercentage` | Allowed relative change of the backup size | `0.25` |
+| `prometheusRules.backupDefinitionError.enabled` | Alert `BackmonStatusError`: backmon reports an error for a disk | `true` |
 
 ### Prerequisites
 
