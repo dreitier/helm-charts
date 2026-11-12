@@ -1,3 +1,9 @@
+## [psono-v3.1.4](https://github.com/dreitier/helm-charts/compare/psono-3.1.3...psono-3.1.4) (2026-11-12)
+
+### Bug Fixes
+
+* **psono:** removed icon dead link ([#61](https://github.com/dreitier/helm-charts/issues/61)) ([b376fb5](https://github.com/dreitier/helm-charts/commit/b376fb58992ebabd7b76d0c265ef3cf9648e6029))
+
 ## [psono-v3.1.3](https://github.com/dreitier/helm-charts/compare/psono-3.1.2...psono-3.1.3) (2026-11-10)
 
 ### Bug Fixes
