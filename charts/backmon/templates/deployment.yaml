@@ -60,13 +60,14 @@ spec:
             - name: http
               containerPort: 8000
               protocol: TCP
+          # /metrics: not protected by basic auth and, unlike /api, doesn't wait for a running disk scan
           livenessProbe:
             httpGet:
-              path: /api
+              path: /metrics
               port: http
           readinessProbe:
             httpGet:
-              path: /api
+              path: /metrics
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
