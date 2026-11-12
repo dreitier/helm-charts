@@ -1,3 +1,9 @@
+## [backmon-v4.1.0](https://github.com/dreitier/helm-charts/compare/backmon-4.0.0...backmon-4.1.0) (2026-11-12)
+
+### Features
+
+* **backmon:** add PrometheusRule BackupPurgeStalled ([#60](https://github.com/dreitier/helm-charts/issues/60)) ([86da28e](https://github.com/dreitier/helm-charts/commit/86da28ea2acdfbc3299089468ae553eb0d395079))
+
 ## [backmon-v4.0.0](https://github.com/dreitier/helm-charts/compare/backmon-3.1.0...backmon-4.0.0) (2026-11-12)
 
 ### ⚠ BREAKING CHANGES
