@@ -29,5 +29,5 @@ helm show values oci://ghcr.io/dreitier/charts/backmon
 | Chart | Description |
 | --- | --- |
 | [backmon](charts/backmon) | [backmon - Monitoring of backup files in filesystems and object storages](https://github.com/dreitier/backmon) |
-| [postfix](charts/postfix) | Deploy postfix in Kubernetes for local mail relaying |
+| [postfix](charts/postfix) | [Postfix SMTP relay that forwards mail from the cluster to an upstream SMTP server](https://github.com/dreitier/postfix-docker) |
 | [psono](charts/psono) | [psono - Deploys the Psono password manager.](https://psono.com/) |

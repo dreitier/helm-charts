@@ -1,11 +1,11 @@
 apiVersion: v2
 
 name: postfix
-description: Highly available postfix relay in Kubernetes
+description: Postfix SMTP relay that forwards mail from the cluster to an upstream SMTP server with TLS and SASL
 type: application
 
 version: 1.2.0
-appVersion: "0.4.0"
+appVersion: "1.0.0"
 
 home: https://github.com/dreitier/postfix-docker
 maintainers:
@@ -15,3 +15,6 @@ maintainers:
     email: tho@dreitier.com
 keywords:
   - postfix
+  - smtp
+  - smtp-relay
+  - mail

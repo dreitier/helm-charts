@@ -1,17 +1,21 @@
+{{- if hasKey .Values.smtp "saslSecurityLevel" }}
+{{- fail "smtp.saslSecurityLevel was renamed to smtp.tlsSecurityLevel (chart 2.0.0)" }}
+{{- end }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "postfix.fullname" . }}
+  name: {{ include "postfix.fullname" . }}
   labels:
-    app: {{ template "postfix.name" . }}
-    chart: {{ template "postfix.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    {{- include "postfix.labels" . | nindent 4 }}
 data:
-  tx-smtp-relay-host: {{ .Values.smtp.relayHost | squote }}
-  tx-smtp-relay-myhostname: {{ .Values.smtp.relayMyhostname | squote }}
-  tx-smtp-relay-username: {{ .Values.smtp.relayUsername | squote }}
-  tx-smtp-relay-networks: {{ .Values.smtp.relayNetworks | squote }}
-  tx-smtp-sasl-security-options: {{ .Values.smtp.saslSecurityOptions | squote }}
-  tx-smtp-sasl-tls-security-options: {{ .Values.smtp.saslTlsSecurityOptions | squote }}
-  tx-smtp-sasl-security-level: {{ .Values.smtp.saslSecurityLevel | squote }}
+  TX_SMTP_RELAY_HOST: {{ required "smtp.relayHost is required" .Values.smtp.relayHost | quote }}
+  TX_SMTP_RELAY_MYHOSTNAME: {{ required "smtp.relayMyhostname is required" .Values.smtp.relayMyhostname | quote }}
+  TX_SMTP_RELAY_USERNAME: {{ .Values.smtp.relayUsername | quote }}
+  TX_SMTP_RELAY_NETWORKS: {{ .Values.smtp.relayNetworks | quote }}
+  TX_SMTP_TLS_SECURITY_LEVEL: {{ .Values.smtp.tlsSecurityLevel | quote }}
+  TX_SMTP_TLS_WRAPPERMODE: {{ ternary "yes" "no" .Values.smtp.tlsWrappermode | quote }}
+  TX_SMTP_SASL_SECURITY_OPTIONS: {{ .Values.smtp.saslSecurityOptions | quote }}
+  TX_SMTP_SASL_TLS_SECURITY_OPTIONS: {{ .Values.smtp.saslTlsSecurityOptions | quote }}
+  {{- range $name, $value := .Values.smtp.postfixParameters }}
+  {{ printf "POSTFIX_%s" $name }}: {{ $value | toString | quote }}
+  {{- end }}

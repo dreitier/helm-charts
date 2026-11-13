@@ -1,3 +1,9 @@
+{{- $passwordSecret := "" }}
+{{- if .Values.secret.useExistingSecret }}
+{{- $passwordSecret = .Values.secret.existingSecretName }}
+{{- else if .Values.smtp.relayPassword }}
+{{- $passwordSecret = include "postfix.fullname" . }}
+{{- end }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -5,9 +11,7 @@ metadata:
   labels:
     {{- include "postfix.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "postfix.selectorLabels" . | nindent 6 }}
@@ -15,6 +19,7 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -26,6 +31,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "postfix.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -34,56 +40,49 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "postfix.fullname" . }}
+          {{- if or $passwordSecret .Values.extraEnv }}
           env:
-            - name: TX_SMTP_RELAY_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "postfix.fullname" . }}
-                  key: tx-smtp-relay-host
-            - name: TX_SMTP_RELAY_MYHOSTNAME
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "postfix.fullname" . }}
-                  key: tx-smtp-relay-myhostname
-            - name: TX_SMTP_RELAY_NETWORKS
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "postfix.fullname" . }}
-                  key: tx-smtp-relay-networks
-            - name: TX_SMTP_RELAY_USERNAME
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "postfix.fullname" . }}
-                  key: tx-smtp-relay-username
-            - name: TX_SMTP_RELAY_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  {{ if .Values.secret.useExistingSecret -}}
-                  name: {{ .Values.secret.existingSecretName }}
-                  {{ else -}}
-                  name: {{ template "postfix.fullname" . }}
-                  {{ end -}}
-                  key: tx-smtp-relay-password
-            - name: TX_SMTP_SASL_SECURITY_OPTIONS
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "postfix.fullname" . }}
-                  key: tx-smtp-sasl-security-options
-            - name: TX_SMTP_SASL_TLS_SECURITY_OPTIONS
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "postfix.fullname" . }}
-                  key: tx-smtp-sasl-tls-security-options
-            - name: TX_SMTP_SASL_SECURITY_LEVEL
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "postfix.fullname" . }}
-                  key: tx-smtp-sasl-security-level
+            {{- if $passwordSecret }}
+            - name: TX_SMTP_RELAY_PASSWORD_FILE
+              value: /run/secrets/postfix/relay-password
+            {{- end }}
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- end }}
           ports:
             - name: smtp
               containerPort: 25
+              protocol: TCP
+          readinessProbe:
+            tcpSocket:
+              port: smtp
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: smtp
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          {{- if $passwordSecret }}
+          volumeMounts:
+            - name: relay-password
+              mountPath: /run/secrets/postfix
+              readOnly: true
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      {{- if $passwordSecret }}
+      volumes:
+        - name: relay-password
+          secret:
+            secretName: {{ $passwordSecret }}
+            items:
+              - key: {{ .Values.secret.useExistingSecret | ternary .Values.secret.existingSecretKey "tx-smtp-relay-password" }}
+                path: relay-password
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
