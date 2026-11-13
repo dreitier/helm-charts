@@ -1011,6 +1011,28 @@ entries:
     version: 2.1.4
   postfix:
   - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2026-11-13T08:04:11.378315809Z"
+    description: Postfix SMTP relay that forwards mail from the cluster to an upstream
+      SMTP server with TLS and SASL
+    digest: 7cae1f3ee4f8410b85bbe246f9aa8af636ac6f0c548ffbaf2c66b78daa828d32
+    home: https://github.com/dreitier/postfix-docker
+    keywords:
+    - postfix
+    - smtp
+    - smtp-relay
+    - mail
+    maintainers:
+    - email: hello@dreitier.com
+      name: dreitier GmbH
+    - email: tho@dreitier.com
+      name: Thomas Höll
+    name: postfix
+    type: application
+    urls:
+    - https://github.com/dreitier/helm-charts/releases/download/postfix-2.0.0/postfix-2.0.0.tgz
+    version: 2.0.0
+  - apiVersion: v2
     appVersion: 0.4.0
     created: "2026-10-20T13:59:29.931259806Z"
     description: Highly available postfix relay in Kubernetes
@@ -1408,4 +1430,4 @@ entries:
     urls:
     - https://github.com/dreitier/helm-charts/releases/download/silencer-1.0.3/silencer-1.0.3.tgz
     version: 1.0.3
-generated: "2026-11-13T06:55:31.43547457Z"
+generated: "2026-11-13T08:04:11.378499493Z"
