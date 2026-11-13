@@ -7,9 +7,9 @@
 
 | Requirement | Version | Notes |
 |---|---|---|
-| Kubernetes | 1.19+ | The chart uses `apps/v1` and, if `ingress.enabled` is set, `networking.k8s.io/v1` |
+| Kubernetes | 1.19+ | Enforced by `kubeVersion` of the chart. The chart uses `apps/v1` and, if `ingress.enabled` is set, `networking.k8s.io/v1` |
 | Helm | 3.0+ | 3.8+ to install the chart from the OCI registry |
-| backmon image | the chart's `appVersion` | Other versions can be set with `image.tag`. The `BackmonStatusError` rule adapts to images older than 5.0.0, everything else is only tested with the `appVersion` |
+| backmon image | the chart's `appVersion` | Pulled from Docker Hub (`dreitier/backmon`) by default; the same images are published to GHCR (`ghcr.io/dreitier/backmon`). Other versions can be set with `image.tag`. The `BackmonStatusError` rule adapts to images older than 5.0.0, everything else is only tested with the `appVersion` |
 | Prometheus Operator CRDs | `monitoring.coreos.com/v1` | Only for `serviceMonitor.enabled` (**enabled by default**) and `prometheusRules.enabled` |
 | Node architecture | `amd64` or `arm64` | Architectures of the published images |
 
@@ -38,10 +38,19 @@ $ helm repo update
 $ helm install backmon dreitier/backmon
 ```
 
-or from the OCI registry:
+The chart is also published as OCI artifact to the GitHub Container Registry. No `helm repo add` is needed
+(Helm 3.8+):
 
 ```console
-$ helm install backmon oci://ghcr.io/dreitier/charts/backmon
+$ helm show values oci://ghcr.io/dreitier/charts/backmon
+$ helm install backmon oci://ghcr.io/dreitier/charts/backmon --version <version>
+```
+
+To pull the backmon image from the GitHub Container Registry instead of Docker Hub, e.g. because of Docker Hub's
+rate limits:
+
+```console
+$ helm install backmon dreitier/backmon --set image.repository=ghcr.io/dreitier/backmon
 ```
 
 ### Configuration parameters
@@ -86,7 +95,7 @@ extraVolumeMounts:
 | Parameter | Description | Default |
 |---|---|---|
 | `replicaCount` | Number of replicas | `1` |
-| `image.repository` | Image repository | `dreitier/backmon` |
+| `image.repository` | Image repository. The images are published to Docker Hub (`dreitier/backmon`) and to the GitHub Container Registry (`ghcr.io/dreitier/backmon`) | `dreitier/backmon` |
 | `image.tag` | Image tag; defaults to the chart's `appVersion` if empty | see `values.yaml` |
 | `image.pullPolicy` | Image pull policy | `IfNotPresent` |
 | `imagePullSecrets` | List of image pull secrets | `[]` |

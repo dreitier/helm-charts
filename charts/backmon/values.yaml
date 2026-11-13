@@ -5,6 +5,7 @@
 replicaCount: 1
 
 image:
+  # Docker Hub; the same images are published as ghcr.io/dreitier/backmon
   repository: dreitier/backmon
   tag: "5.0.1"
   pullPolicy: IfNotPresent
