@@ -133,5 +133,6 @@ extraEnv: []
 #  - name: AWS_CA_BUNDLE
 #    value: /etc/ssl/certs/custom-trust-bundle.crt
 
+# existing secrets whose keys are injected as environment variables, e.g. for __${VAR}__ placeholders in backmon.config.content
 extraEnvFrom: []
 #  - name: custom-secret
