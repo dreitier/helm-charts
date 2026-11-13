@@ -3,12 +3,45 @@
 - [Project website on GitHub](https://github.com/dreitier/backmon)
 - [Official documentation](https://dreitier.github.io/backmon-docs)
 
+## Prerequisites
+
+| Requirement | Version | Notes |
+|---|---|---|
+| Kubernetes | 1.19+ | The chart uses `apps/v1` and, if `ingress.enabled` is set, `networking.k8s.io/v1` |
+| Helm | 3.0+ | 3.8+ to install the chart from the OCI registry |
+| backmon image | the chart's `appVersion` | Other versions can be set with `image.tag`. The `BackmonStatusError` rule adapts to images older than 5.0.0, everything else is only tested with the `appVersion` |
+| Prometheus Operator CRDs | `monitoring.coreos.com/v1` | Only for `serviceMonitor.enabled` (**enabled by default**) and `prometheusRules.enabled` |
+| Node architecture | `amd64` or `arm64` | Architectures of the published images |
+
+- **Prometheus Operator:** the chart creates a `ServiceMonitor` by default. In a cluster without the Prometheus
+  Operator CRDs (e.g. installed by [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)),
+  the installation fails unless you set `serviceMonitor.enabled=false`. backmon's metrics can then be scraped from
+  `/metrics` of the service by other means.
+- **Access to the backups:** the pod needs network access to the object storage it monitors (S3 endpoint or
+  `storage.googleapis.com`), or the backup directories have to be mounted with `extraVolumes` and `extraVolumeMounts`.
+  backmon runs as non-root user 65532; set e.g. `podSecurityContext.fsGroup` if that user can't read a mounted volume
+  (or can't delete files in it, if backups are purged).
+- **Credentials:** an identity that is allowed to list and read the backups, and to delete them if backups are purged:
+  S3 access keys or a Google service account key in an existing secret (`extraEnvFrom`, `extraVolumes`), or a cloud
+  identity bound to the service account (`serviceAccount.annotations`, e.g. IRSA or GKE Workload Identity).
+  Google Cloud Storage requires a backmon image with GCS support.
+- **Backup definitions:** each monitored disk (bucket or directory) contains a `backup_definitions.yaml`, see the
+  [official documentation](https://dreitier.github.io/backmon-docs).
+- **Ingress controller:** only if `ingress.enabled` is set. backmon's API is not protected unless `http.basic_auth` is
+  configured in `backmon.config.content`; `/metrics` is never protected.
+
 ## Getting started
 
 ```console
 $ helm repo add dreitier https://dreitier.github.io/helm-charts/
 $ helm repo update
-$ helm install dreitier/backmon
+$ helm install backmon dreitier/backmon
+```
+
+or from the OCI registry:
+
+```console
+$ helm install backmon oci://ghcr.io/dreitier/charts/backmon
 ```
 
 ### Configuration parameters
@@ -98,10 +131,6 @@ extraVolumeMounts:
 | `prometheusRules.backupSizeChanged.enabled` | Alert `BackupSizeChanged`: the size of the latest backup changed by more than the threshold within an hour | `true` |
 | `prometheusRules.backupSizeChanged.thresholdPercentage` | Allowed relative change of the backup size | `0.25` |
 | `prometheusRules.backupDefinitionError.enabled` | Alert `BackmonStatusError`: backmon reports an error for a disk | `true` |
-
-### Prerequisites
-
-- Kubernetes 1.10+
 
 ## Development
 
