@@ -18,6 +18,8 @@ updates:
     ignore:
       # updated right after each backmon release by .github/workflows/update-backmon.yaml
       - dependency-name: dreitier/backmon
+      # updated right after each postfix image release by .github/workflows/update-postfix.yaml
+      - dependency-name: dreitier/postfix
 
   # versions of the actions used in .github/workflows
   - package-ecosystem: github-actions

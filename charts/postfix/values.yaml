@@ -1,13 +1,11 @@
 # Default values for postfix.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+# Image: https://github.com/dreitier/postfix-docker (environment variables in its README).
 
 replicaCount: 1
 
-# Docker image
 image:
   repository: dreitier/postfix
-  tag: "0.4.0"
+  tag: "1.0.0"
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -22,78 +20,63 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ""
-
-# Role Based Access Control
-# Ref: https://kubernetes.io/docs/admin/authorization/rbac/
-rbac:
-  create: true
-  role:
-    ## Rules to create. It follows the role specification
-    rules:
-      - apiGroups:
-          - ''
-        resources:
-          - services
-          - endpoints
-          - pods
-        verbs:
-          - get
-          - watch
-          - list
+  # Postfix doesn't use the Kubernetes API
+  automountServiceAccountToken: false
 
 podAnnotations: {}
 
 podSecurityContext: {}
-# fsGroup: 2000
 
+# The Postfix master process runs as root and drops privileges for its daemons itself,
+# so runAsNonRoot/runAsUser don't work.
 securityContext: {}
-# capabilities:
-#   drop:
-#   - ALL
-# readOnlyRootFilesystem: true
-# runAsNonRoot: true
-# runAsUser: 1000
 
-# Expose pods with service on port 25
+# Don't expose the relay to the internet: with a LoadBalancer (externalTrafficPolicy: Cluster) or NodePort,
+# connections arrive with a node address, which is usually inside smtp.relayNetworks.
 service:
   type: ClusterIP
   port: 25
+  annotations: {}
 
-# SMTP server details
-# Used by postfix to connect to SMTP server
 smtp:
-  # Example with mailgun
-  relayHost: '[smtp.mailgun.org]:587'
+  # upstream SMTP server; brackets: no MX lookup (required)
+  relayHost: "[smtp.mailgun.org]:587"
+  # host name of the relay (HELO, Received: header) (required)
   relayMyhostname: my.host.local
-  relayUsername: relayuser
-  relayPassword: relaypassword
-  relayNetworks: '10.0.0.0/8,127.0.0.0/8,172.17.0.0/16,192.0.0.0/8'
+  # SASL credentials for the upstream server; without user name and password, SASL is disabled
+  relayUsername: ""
+  # ignored if secret.useExistingSecret is true
+  relayPassword: ""
+  # clients allowed to relay (Postfix mynetworks). Everything in these networks can send mail with your
+  # credentials: in Kubernetes that is every pod (pod CIDR) and every node address.
+  relayNetworks: "127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+  # TLS to the upstream server: encrypt (required), secure/verify (with certificate check), may, none
+  tlsSecurityLevel: encrypt
+  # true for implicit TLS (port 465), false for STARTTLS (ports 587/25)
+  tlsWrappermode: false
   saslSecurityOptions: noanonymous, noplaintext
   saslTlsSecurityOptions: noanonymous
-  saslSecurityLevel: may
+  # any other main.cf parameter, e.g. message_size_limit: "52428800" (passed as POSTFIX_<parameter>)
+  postfixParameters: {}
 
+# The relay password is mounted as a file (TX_SMTP_RELAY_PASSWORD_FILE), not passed as an environment variable.
 secret:
   useExistingSecret: false
   existingSecretName: my-postfix-secret
+  existingSecretKey: tx-smtp-relay-password
+
+# additional environment variables for the container
+extraEnv: []
+# - name: TZ
+#   value: Europe/Berlin
 
 resources: {}
-# We usually recommend not to specify default resources and to leave this as a conscious
-# choice for the user. This also increases chances charts run on environments with little
-# resources, such as Minikube. If you do want to specify resources, uncomment the following
-# lines, adjust them as necessary, and remove the curly braces after 'resources:'.
 # limits:
 #   cpu: 100m
 #   memory: 128Mi
 # requests:
-#   cpu: 100m
-#   memory: 128Mi
-
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+#   cpu: 10m
+#   memory: 32Mi
 
 nodeSelector: {}
 

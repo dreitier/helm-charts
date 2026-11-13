@@ -1,1 +1,19 @@
-Postfix Relay Deployed!
+Postfix relay {{ include "postfix.fullname" . }} forwards mail to {{ .Values.smtp.relayHost }}.
+
+Applications send mail without authentication to:
+  {{ include "postfix.fullname" . }}.{{ .Release.Namespace }}.svc:{{ .Values.service.port }}
+
+Allowed client networks: {{ .Values.smtp.relayNetworks }}
+{{- $networks := printf ",%s," (.Values.smtp.relayNetworks | nospace) }}
+{{- if or (contains ",0.0.0.0/0," $networks) (contains ",192.0.0.0/8," $networks) }}
+
+WARNING: smtp.relayNetworks contains public addresses, anyone there can send mail with your credentials.
+{{- end }}
+{{- if ne .Values.service.type "ClusterIP" }}
+
+WARNING: service.type is {{ .Values.service.type }}. Connections through a node usually arrive with a node
+address, which is inside smtp.relayNetworks - never make this service reachable from the internet.
+{{- end }}
+
+Logs (status=sent / deferred): kubectl -n {{ .Release.Namespace }} logs deploy/{{ include "postfix.fullname" . }}
+Mail queue:                    kubectl -n {{ .Release.Namespace }} exec deploy/{{ include "postfix.fullname" . }} -- postqueue -p
