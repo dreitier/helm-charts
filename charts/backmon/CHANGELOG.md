@@ -1,3 +1,9 @@
+## [backmon-v4.2.0](https://github.com/dreitier/helm-charts/compare/backmon-4.1.1...backmon-4.2.0) (2026-11-13)
+
+### Features
+
+* **backmon:** update backmon to 5.1.0 ([#66](https://github.com/dreitier/helm-charts/issues/66)) ([eedd8fe](https://github.com/dreitier/helm-charts/commit/eedd8feb1387c231e66e6275dee2ca6e94c24877))
+
 ## [backmon-v4.1.1](https://github.com/dreitier/helm-charts/compare/backmon-4.1.0...backmon-4.1.1) (2026-11-13)
 
 ### Bug Fixes
