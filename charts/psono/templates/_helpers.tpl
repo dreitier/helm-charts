@@ -270,3 +270,19 @@ envFrom:
   {{- end }}
 {{- end }}
 {{- end -}}
+
+{{/*
+Environment of the fileserver containers: health check rate limit + extraEnv
+*/}}
+{{- define "psono.fileserver.env" -}}
+{{- if or .Values.fileserver.throttleRateHealthCheck .Values.fileserver.extraEnv -}}
+env:
+  {{- with .Values.fileserver.throttleRateHealthCheck }}
+  - name: PSONOFS_THROTTLE_RATE_HEALTH_CHECK
+    value: {{ . | quote }}
+  {{- end }}
+  {{- with .Values.fileserver.extraEnv }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+{{- end }}
+{{- end -}}

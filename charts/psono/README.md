@@ -65,3 +65,11 @@ fileserver:
   extraVolumeMounts:
     - {name: aws-token, mountPath: /var/run/secrets/eks.amazonaws.com/serviceaccount, readOnly: true}
 ```
+
+# Health check rate limit
+
+Psono throttles `/healthcheck/` per client IP (default 61/hour). A monitoring probe every 30 s, the server's
+startup probe (every 10 s) or several callers behind one reverse proxy (all with the proxy's IP) run into
+`429 Too Many Requests`. `server.throttleRateHealthCheck` and `fileserver.throttleRateHealthCheck` (default
+`300/hour`, format `<n>/<second|minute|hour|day>`) set `PSONO_THROTTLE_RATE_HEALTH_CHECK` /
+`PSONOFS_THROTTLE_RATE_HEALTH_CHECK`; `""` keeps Psono's default.

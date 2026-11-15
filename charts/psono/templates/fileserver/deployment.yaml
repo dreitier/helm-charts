@@ -54,9 +54,8 @@ spec:
           {{- with include "psono.fileserver.envFrom" . }}
           {{- . | nindent 10 }}
           {{- end }}
-          {{- with .Values.fileserver.extraEnv }}
-          env:
-            {{- toYaml . | nindent 12 }}
+          {{- with include "psono.fileserver.env" . }}
+          {{- . | nindent 10 }}
           {{- end }}
           command:
             - python3
@@ -82,9 +81,8 @@ spec:
           {{- with include "psono.fileserver.envFrom" . }}
           {{- . | nindent 10 }}
           {{- end }}
-          {{- with .Values.fileserver.extraEnv }}
-          env:
-            {{- toYaml . | nindent 12 }}
+          {{- with include "psono.fileserver.env" . }}
+          {{- . | nindent 10 }}
           {{- end }}
           ports:
             - name: http
