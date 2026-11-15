@@ -160,6 +160,11 @@ server:
   # (e.g. AWS_ROLE_ARN + projected service account token for IRSA)
   extraEnv: []
   extraEnvFrom: []
+
+  # Rate limit of /healthcheck/ per client IP (PSONO_THROTTLE_RATE_HEALTH_CHECK). Psono's default (61/hour) is below
+  # a 30 s monitoring probe, and behind a reverse proxy all callers share one IP. Format: <n>/<second|minute|hour|day>;
+  # "" leaves Psono's default.
+  throttleRateHealthCheck: "300/hour"
   extraVolumes: []
   extraVolumeMounts: []
 
@@ -262,6 +267,11 @@ fileserver:
   # the shard kwargs (boto3 then uses the web identity token)
   extraEnv: []
   extraEnvFrom: []
+
+  # Rate limit of /healthcheck/ per client IP (PSONOFS_THROTTLE_RATE_HEALTH_CHECK). Psono's default (61/hour) is below
+  # a 30 s monitoring probe, and behind a reverse proxy all callers share one IP. Format: <n>/<second|minute|hour|day>;
+  # "" leaves Psono's default.
+  throttleRateHealthCheck: "300/hour"
   extraVolumes: []
   extraVolumeMounts: []
 
