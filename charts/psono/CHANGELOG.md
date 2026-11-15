@@ -1,3 +1,9 @@
+## [psono-v3.2.0](https://github.com/dreitier/helm-charts/compare/psono-3.1.4...psono-3.2.0) (2026-11-15)
+
+### Features
+
+* **psono:** add health check throttle setting ([#69](https://github.com/dreitier/helm-charts/issues/69)) ([fa503ee](https://github.com/dreitier/helm-charts/commit/fa503eee580ecdb38722b1fc92504a97c62a3300))
+
 ## [psono-v3.1.4](https://github.com/dreitier/helm-charts/compare/psono-3.1.3...psono-3.1.4) (2026-11-12)
 
 ### Bug Fixes
