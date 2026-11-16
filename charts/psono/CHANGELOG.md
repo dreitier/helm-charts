@@ -1,3 +1,9 @@
+## [psono-v3.3.0](https://github.com/dreitier/helm-charts/compare/psono-3.2.1...psono-3.3.0) (2026-11-16)
+
+### Features
+
+* **psono:** add anonymous request throttle setting ([#72](https://github.com/dreitier/helm-charts/issues/72)) ([362183a](https://github.com/dreitier/helm-charts/commit/362183a3825201a6e95e3f045ea3d353ac7f1d20))
+
 ## [psono-v3.2.1](https://github.com/dreitier/helm-charts/compare/psono-3.2.0...psono-3.2.1) (2026-11-16)
 
 ### Bug Fixes
