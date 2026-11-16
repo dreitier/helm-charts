@@ -91,10 +91,14 @@ spec:
           {{- with include "psono.server.envFrom" . }}
           {{- . | nindent 10 }}
           {{- end }}
-          {{- if or .Values.fileserver.enabled .Values.server.extraEnv .Values.server.throttleRateHealthCheck }}
+          {{- if or .Values.fileserver.enabled .Values.server.extraEnv .Values.server.throttleRateHealthCheck .Values.server.throttleRateAnon }}
           env:
             {{- with .Values.server.throttleRateHealthCheck }}
             - name: PSONO_THROTTLE_RATE_HEALTH_CHECK
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.server.throttleRateAnon }}
+            - name: PSONO_THROTTLE_RATE_ANON
               value: {{ . | quote }}
             {{- end }}
             {{- with .Values.server.extraEnv }}

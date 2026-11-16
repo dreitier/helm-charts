@@ -73,3 +73,8 @@ startup probe (every 10 s) or several callers behind one reverse proxy (all with
 `429 Too Many Requests`. `server.throttleRateHealthCheck` and `fileserver.throttleRateHealthCheck` (default
 `300/hour`, format `<n>/<second|minute|hour|day>`) set `PSONO_THROTTLE_RATE_HEALTH_CHECK` /
 `PSONOFS_THROTTLE_RATE_HEALTH_CHECK`; `""` keeps Psono's default.
+
+On top of that, Psono limits all anonymous requests per client IP (`THROTTLE_RATE_ANON`, default `1440/day`), health
+checks included: a probe every 30 s (2880/day) passes for 12 hours, then the fileserver answers `429`.
+`fileserver.throttleRateAnon` (default `10000/day`) and `server.throttleRateAnon` (default `""`, Psono's default) set
+`PSONOFS_THROTTLE_RATE_ANON` / `PSONO_THROTTLE_RATE_ANON`.
