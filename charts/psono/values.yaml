@@ -21,7 +21,7 @@ server:
 
   image:
     repository: psono/psono-combo-enterprise
-    tag: 7.5.8-4.9.5-1.10.4
+    tag: 7.5.10-4.9.6-1.10.5
     pullPolicy: IfNotPresent
 
   nameOverride: ""
