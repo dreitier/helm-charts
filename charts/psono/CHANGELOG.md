@@ -1,3 +1,9 @@
+## [psono-v3.3.2](https://github.com/dreitier/helm-charts/compare/psono-3.3.1...psono-3.3.2) (2026-11-19)
+
+### Bug Fixes
+
+* **deps:** bump quay.io/prometheuscommunity/postgres-exporter from v0.20.1 to v0.21.1 in /charts/psono ([#74](https://github.com/dreitier/helm-charts/issues/74)) ([f07dd31](https://github.com/dreitier/helm-charts/commit/f07dd312be6fe9a6d786ac55170d73587569bab6))
+
 ## [psono-v3.3.1](https://github.com/dreitier/helm-charts/compare/psono-3.3.0...psono-3.3.1) (2026-11-18)
 
 ### Bug Fixes
