@@ -1,3 +1,9 @@
+## [psono-v3.3.3](https://github.com/dreitier/helm-charts/compare/psono-3.3.2...psono-3.3.3) (2026-11-20)
+
+### Bug Fixes
+
+* **deps:** bump psono/psono-combo-enterprise from 7.5.11-4.9.6-1.10.5 to 7.5.12-4.9.7-1.10.6 in /charts/psono ([#75](https://github.com/dreitier/helm-charts/issues/75)) ([bbcfbc0](https://github.com/dreitier/helm-charts/commit/bbcfbc070e5f1a865363dc63242236bc41ead50d))
+
 ## [psono-v3.3.2](https://github.com/dreitier/helm-charts/compare/psono-3.3.1...psono-3.3.2) (2026-11-19)
 
 ### Bug Fixes

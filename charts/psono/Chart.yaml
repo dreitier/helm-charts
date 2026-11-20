@@ -1,11 +1,11 @@
 apiVersion: v2
-appVersion: "7.5.11-4.9.6-1.10.5"
+appVersion: "7.5.12-4.9.7-1.10.6"
 type: application
 # batch/v1 CronJob, networking.k8s.io/v1 Ingress
 kubeVersion: ">=1.21.0-0"
 description: A Helm chart for psono password manager
 name: psono
-version: 3.3.2
+version: 3.3.3
 annotations:
   # appVersion is synced from this image tag on release
   dreitier.com/app-version-from: .server.image.tag
