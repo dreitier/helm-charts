@@ -14,14 +14,16 @@ repos:
         # templates/ and files/ contain Go templates (rendered with tpl), not plain YAML
         exclude: ^charts/[^/]+/(templates|files)/
 
-  # formats Chart.yaml / values.yaml (Go templates are left alone)
+  # formats all YAML files before yamllint checks them (.yamlfmt.yaml, output satisfies .yamllint.yaml);
+  # templates/ and files/ are Go templates and stay untouched
   - repo: https://github.com/google/yamlfmt
     rev: v0.21.0
     hooks:
       - id: yamlfmt
-        files: ^charts/[^/]+/[^/]+\.ya?ml$
+        exclude: ^charts/[^/]+/(templates|files)/
 
-  # same rules as "ct lint" in CI (.yamllint.yaml)
+  # same rules as "ct lint" in CI (.yamllint.yaml); runs after yamlfmt, so it only reports what the
+  # formatter can't fix (e.g. duplicate keys, truthy values)
   - repo: https://github.com/adrienverge/yamllint
     rev: v1.38.0
     hooks:
