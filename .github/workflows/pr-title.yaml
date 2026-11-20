@@ -11,4 +11,4 @@ permissions:
 
 jobs:
   pr-title:
-    uses: dreitier/shared-ci-components/.github/workflows/conventional-pr-title.yml@1ba590342248df7855a136be3420378586d139d6 # v1.2.0
+    uses: dreitier/shared-ci-components/.github/workflows/conventional-pr-title.yml@1ba590342248df7855a136be3420378586d139d6  # v1.2.0
