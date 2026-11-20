@@ -127,6 +127,6 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app.outputs.token }}
           PR_NUMBER: ${{ steps.pr.outputs.pull-request-number }}
-        run: |
+        run: |-
           gh pr merge "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --auto --squash
           echo "Auto-merge enabled for #${PR_NUMBER}" >> "$GITHUB_STEP_SUMMARY"

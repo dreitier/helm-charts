@@ -1,4 +1,3 @@
----
 name: Backfill OCI Registry
 
 # Manually pushes chart versions released before OCI publishing existed to the registry.
@@ -44,7 +43,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REGISTRY_USER: ${{ github.actor }}
-        run: |
+        run: |-
           echo "$GH_TOKEN" | helm registry login "${OCI_REPOSITORY%%/*}" --username "$REGISTRY_USER" --password-stdin
           for pkg in packages/*.tgz; do
             name=$(helm show chart "$pkg" | yq '.name')

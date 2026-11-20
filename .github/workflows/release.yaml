@@ -1,4 +1,3 @@
----
 name: Release Charts
 
 on:
@@ -160,7 +159,7 @@ jobs:
         if: steps.package.outputs.packaged == 'true'
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-        run: |
+        run: |-
           owner="${GITHUB_REPOSITORY%%/*}"
           repo="${GITHUB_REPOSITORY#*/}"
           cr upload --owner "$owner" --git-repo "$repo" --commit "$(git rev-parse HEAD)" --skip-existing

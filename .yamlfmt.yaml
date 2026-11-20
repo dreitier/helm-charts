@@ -1,4 +1,4 @@
-# Formatter for the chart YAML files (pre-commit hook "yamlfmt"); output satisfies .yamllint.yaml
+# Formatter for all YAML files except chart templates (pre-commit hook "yamlfmt"); output satisfies .yamllint.yaml
 formatter:
   type: basic
   retain_line_breaks_single: true
