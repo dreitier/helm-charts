@@ -1,3 +1,9 @@
+## [backmon-v5.1.0](https://github.com/dreitier/helm-charts/compare/backmon-5.0.2...backmon-5.1.0) (2026-11-22)
+
+### Features
+
+* **backmon:** optional restart by Stakater Reloader ([#80](https://github.com/dreitier/helm-charts/issues/80)) ([51a3993](https://github.com/dreitier/helm-charts/commit/51a3993718323b0a9763aa9b039d17538b8acd1d))
+
 ## [backmon-v5.0.2](https://github.com/dreitier/helm-charts/compare/backmon-5.0.1...backmon-5.0.2) (2026-11-20)
 
 ### Bug Fixes
