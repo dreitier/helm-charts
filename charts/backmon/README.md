@@ -125,6 +125,7 @@ extraVolumeMounts:
 | `extraEnv` | List of environment variables to be injected into the backmon container. See `values.yaml` for an example | `[]` |
 | `extraVolumes` | List of volumes to be added to the pod. See `values.yaml` for an example | `[]` |
 | `extraVolumeMounts` | List of volume mounts to be added to the backmon container. See `values.yaml` for an example | `[]` |
+| `reloader.enabled` | Annotate the deployment with `reloader.stakater.com/auto`, see [Reloading the configuration](#reloading-the-configuration). Requires [Stakater Reloader](https://github.com/stakater/Reloader) | `false` |
 | `serviceMonitor.enabled` | Whether to deploy a ServiceMonitor object to make Prometheus scrape the application metrics. Requires the corresponding CRD to be installed | `true` |
 | `prometheusRules.enabled` | Whether to deploy PrometheusRule objects to monitor the state of backups. Requires the corresponding CRD to be installed | `false` |
 | `prometheusRules.backupOverdue.enabled` | Alert `BackupOverdue`: the latest backup is older than expected | `true` |
@@ -140,6 +141,21 @@ extraVolumeMounts:
 | `prometheusRules.backupSizeChanged.enabled` | Alert `BackupSizeChanged`: the size of the latest backup changed by more than the threshold within an hour | `true` |
 | `prometheusRules.backupSizeChanged.thresholdPercentage` | Allowed relative change of the backup size | `0.25` |
 | `prometheusRules.backupDefinitionError.enabled` | Alert `BackmonStatusError`: backmon reports an error for a disk | `true` |
+
+### Reloading the configuration
+
+backmon reads its configuration file and the environment variables for `__${VAR}__` placeholders when it starts, so a
+change needs a restart of the pod:
+
+- `backmon.config.content` is part of the checksum annotation of the pod: `helm upgrade` with a changed configuration
+  rolls the deployment by itself.
+- Secrets and configmaps which are not rendered by this chart (`extraEnvFrom`, `extraEnv`, `extraVolumes`) can change
+  without Helm noticing, e.g. if they are managed by External Secrets or rotated by hand. Set `reloader.enabled=true` to
+  let [Stakater Reloader](https://github.com/stakater/Reloader) restart the pod whenever one of the secrets or
+  configmaps referenced by it changes. Reloader has to be installed in the cluster; without it the annotation has no
+  effect.
+
+Outside of Kubernetes, backmon reloads its configuration file on `SIGHUP`.
 
 ## Development
 

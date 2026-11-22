@@ -90,6 +90,14 @@ backmon:
       environments: []
       ...
 
+# backmon reads its configuration file and the environment variables for __${VAR}__ placeholders at startup only.
+# A changed backmon.config.content already restarts the pod on `helm upgrade` (checksum annotation). Enable this to
+# also restart it if a secret or configmap referenced by the pod is changed outside of Helm, e.g. the secrets of
+# extraEnvFrom when they are managed by External Secrets or rotated by hand.
+# Requires Stakater Reloader (https://github.com/stakater/Reloader) in the cluster.
+reloader:
+  enabled: false
+
 serviceMonitor:
   enabled: true
 
