@@ -4,6 +4,13 @@
 
 imagePullSecrets: []
 
+# Restart the server and fileserver if a secret or configmap they reference is changed outside of Helm, e.g. the
+# existingSecret rendered by external-secrets after a rotation. The chart's own config (settings.yaml) already
+# rolls the pods on `helm upgrade` (checksum annotations). Sets reloader.stakater.com/auto on both Deployments;
+# requires Stakater Reloader (https://github.com/stakater/Reloader) in the cluster.
+reloader:
+  enabled: false
+
 serviceAccounts:
   server:
     create: true

@@ -4,6 +4,11 @@ metadata:
   name: {{ include "psono.server.fullname" . }}
   labels:
     {{- include "psono.server.labels" . | nindent 4 }}
+  {{- if .Values.reloader.enabled }}
+  annotations:
+    # Stakater Reloader restarts the pods if a secret or configmap referenced by them changes
+    reloader.stakater.com/auto: "true"
+  {{- end }}
 spec:
   replicas: {{ .Values.server.replicaCount }}
   selector:
