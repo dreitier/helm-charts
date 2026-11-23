@@ -1,3 +1,9 @@
+## [psono-v3.4.0](https://github.com/dreitier/helm-charts/compare/psono-3.3.3...psono-3.4.0) (2026-11-23)
+
+### Features
+
+* **psono:** optional restart by Stakater Reloader ([#85](https://github.com/dreitier/helm-charts/issues/85)) ([f056486](https://github.com/dreitier/helm-charts/commit/f05648676c37127fa58947976d01d2da51ad63aa))
+
 ## [psono-v3.3.3](https://github.com/dreitier/helm-charts/compare/psono-3.3.2...psono-3.3.3) (2026-11-20)
 
 ### Bug Fixes
