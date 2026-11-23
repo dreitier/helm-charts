@@ -34,6 +34,13 @@ leaves these settings out of `settings.yaml`, so the Secret has to provide them:
 The database credentials for the postgres-exporter sidecar and the backup cron job are read from the same
 Secret.
 
+# Restart on secret changes (`reloader.enabled`)
+
+`server.existingSecret`/`fileserver.existingSecret` (and `extraEnvFrom`) can change without Helm noticing, e.g.
+when external-secrets renders a rotated value – Psono only reads them at startup. With `reloader.enabled=true` both
+Deployments carry `reloader.stakater.com/auto: "true"`, and [Stakater Reloader](https://github.com/stakater/Reloader)
+restarts them on such a change. Reloader has to be installed in the cluster; without it the annotation has no effect.
+
 # IRSA / extra environment
 
 `server.extraEnv`, `extraEnvFrom`, `extraVolumes`, `extraVolumeMounts` (and the same under `fileserver`)
