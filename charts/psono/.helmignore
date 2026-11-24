@@ -20,3 +20,5 @@
 .idea/
 *.tmproj
 .vscode/
+# release metadata (multi-semantic-release)
+package.json
